@@ -1,14 +1,8 @@
 void test_initial_load() {
     Instance* inst = Instance::new_velib_mini();
     vector<Remorque*>* remorques = inst->getRemorques();
-    vector<Station*>* stations = inst->getStations();
     Remorque* rem = remorques->at(0);
-    Station* tmp;
-    list<Station*>* list_stations;
-    for (auto it = stations.begin(); iterator != intList.end(); ++iterator) {
-        station
-    }
-    Circuit circuit = Circuit(inst, rem, stations);
+    Circuit circuit = Circuit(inst, rem);
 
     int k = circuit.optimalInitialLoad();
     printf("Optimal initial load : %i", k);

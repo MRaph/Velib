@@ -1,4 +1,4 @@
-# Install script for directory: /home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49
+# Install script for directory: /home/raphael/Documents/3A/Velib
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/raphael/Documents/3A/Velib/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

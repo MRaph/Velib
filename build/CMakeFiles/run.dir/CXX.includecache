@@ -6,37 +6,37 @@
 
 #IncludeRegexTransform: 
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/annealingSolver.cpp
+/home/raphael/Documents/3A/Velib/src/annealingSolver.cpp
 solver.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/solver.hpp
+/home/raphael/Documents/3A/Velib/src/solver.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/arc.cpp
+/home/raphael/Documents/3A/Velib/src/arc.cpp
 arc.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/arc.hpp
+/home/raphael/Documents/3A/Velib/src/arc.hpp
 instance.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/instance.hpp
+/home/raphael/Documents/3A/Velib/src/instance.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/arc.hpp
+/home/raphael/Documents/3A/Velib/src/arc.hpp
 common.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/common.hpp
+/home/raphael/Documents/3A/Velib/src/common.hpp
 site.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/site.hpp
+/home/raphael/Documents/3A/Velib/src/site.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/carloSolver.cpp
+/home/raphael/Documents/3A/Velib/src/carloSolver.cpp
 solver.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/solver.hpp
+/home/raphael/Documents/3A/Velib/src/solver.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/circuit.cpp
+/home/raphael/Documents/3A/Velib/src/circuit.cpp
 circuit.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/circuit.hpp
+/home/raphael/Documents/3A/Velib/src/circuit.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/circuit.hpp
+/home/raphael/Documents/3A/Velib/src/circuit.hpp
 common.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/common.hpp
+/home/raphael/Documents/3A/Velib/src/common.hpp
 instance.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/instance.hpp
+/home/raphael/Documents/3A/Velib/src/instance.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/common.hpp
+/home/raphael/Documents/3A/Velib/src/common.hpp
 stdio.h
 -
 stdlib.h
@@ -68,41 +68,41 @@ map
 set
 -
 options.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/options.hpp
+/home/raphael/Documents/3A/Velib/src/options.hpp
 util.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/util.hpp
+/home/raphael/Documents/3A/Velib/src/util.hpp
 logger.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/logger.hpp
+/home/raphael/Documents/3A/Velib/src/logger.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/descentSolver.cpp
+/home/raphael/Documents/3A/Velib/src/descentSolver.cpp
 solver.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/solver.hpp
+/home/raphael/Documents/3A/Velib/src/solver.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/instance.cpp
+/home/raphael/Documents/3A/Velib/src/instance.cpp
 instance.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/instance.hpp
+/home/raphael/Documents/3A/Velib/src/instance.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/instance.hpp
+/home/raphael/Documents/3A/Velib/src/instance.hpp
 common.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/common.hpp
+/home/raphael/Documents/3A/Velib/src/common.hpp
 site.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/site.hpp
+/home/raphael/Documents/3A/Velib/src/site.hpp
 station.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/station.hpp
+/home/raphael/Documents/3A/Velib/src/station.hpp
 remorque.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/remorque.hpp
+/home/raphael/Documents/3A/Velib/src/remorque.hpp
 arc.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/arc.hpp
+/home/raphael/Documents/3A/Velib/src/arc.hpp
 options.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/options.hpp
+/home/raphael/Documents/3A/Velib/src/options.hpp
 solver.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/solver.hpp
+/home/raphael/Documents/3A/Velib/src/solver.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/logger.cpp
+/home/raphael/Documents/3A/Velib/src/logger.cpp
 logger.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/logger.hpp
+/home/raphael/Documents/3A/Velib/src/logger.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/logger.hpp
+/home/raphael/Documents/3A/Velib/src/logger.hpp
 stdlib.h
 -
 string
@@ -114,19 +114,19 @@ sstream
 fstream
 -
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/main.cpp
+/home/raphael/Documents/3A/Velib/src/main.cpp
 common.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/common.hpp
+/home/raphael/Documents/3A/Velib/src/common.hpp
 instance.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/instance.hpp
+/home/raphael/Documents/3A/Velib/src/instance.hpp
 solver.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/solver.hpp
+/home/raphael/Documents/3A/Velib/src/solver.hpp
 options.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/options.hpp
+/home/raphael/Documents/3A/Velib/src/options.hpp
 test.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/test.hpp
+/home/raphael/Documents/3A/Velib/src/test.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/optionparser.hpp
+/home/raphael/Documents/3A/Velib/src/optionparser.hpp
 vector
 -
 map
@@ -148,79 +148,79 @@ iomanip
 stdexcept
 -
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/options.hpp
+/home/raphael/Documents/3A/Velib/src/options.hpp
 optionparser.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/optionparser.hpp
+/home/raphael/Documents/3A/Velib/src/optionparser.hpp
 logger.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/logger.hpp
+/home/raphael/Documents/3A/Velib/src/logger.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/remorque.cpp
+/home/raphael/Documents/3A/Velib/src/remorque.cpp
 remorque.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/remorque.hpp
+/home/raphael/Documents/3A/Velib/src/remorque.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/remorque.hpp
+/home/raphael/Documents/3A/Velib/src/remorque.hpp
 common.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/common.hpp
+/home/raphael/Documents/3A/Velib/src/common.hpp
 site.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/site.hpp
+/home/raphael/Documents/3A/Velib/src/site.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/site.cpp
+/home/raphael/Documents/3A/Velib/src/site.cpp
 site.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/site.hpp
+/home/raphael/Documents/3A/Velib/src/site.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/site.hpp
+/home/raphael/Documents/3A/Velib/src/site.hpp
 common.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/common.hpp
+/home/raphael/Documents/3A/Velib/src/common.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/solution.cpp
+/home/raphael/Documents/3A/Velib/src/solution.cpp
 solution.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/solution.hpp
+/home/raphael/Documents/3A/Velib/src/solution.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/solution.hpp
+/home/raphael/Documents/3A/Velib/src/solution.hpp
 common.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/common.hpp
+/home/raphael/Documents/3A/Velib/src/common.hpp
 circuit.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/circuit.hpp
+/home/raphael/Documents/3A/Velib/src/circuit.hpp
 options.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/options.hpp
+/home/raphael/Documents/3A/Velib/src/options.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/solver.cpp
+/home/raphael/Documents/3A/Velib/src/solver.cpp
 solver.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/solver.hpp
+/home/raphael/Documents/3A/Velib/src/solver.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/solver.hpp
+/home/raphael/Documents/3A/Velib/src/solver.hpp
 common.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/common.hpp
+/home/raphael/Documents/3A/Velib/src/common.hpp
 instance.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/instance.hpp
+/home/raphael/Documents/3A/Velib/src/instance.hpp
 solution.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/solution.hpp
+/home/raphael/Documents/3A/Velib/src/solution.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/station.cpp
+/home/raphael/Documents/3A/Velib/src/station.cpp
 station.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/station.hpp
+/home/raphael/Documents/3A/Velib/src/station.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/station.hpp
+/home/raphael/Documents/3A/Velib/src/station.hpp
 common.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/common.hpp
+/home/raphael/Documents/3A/Velib/src/common.hpp
 site.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/site.hpp
+/home/raphael/Documents/3A/Velib/src/site.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/steepest2optSolver.cpp
+/home/raphael/Documents/3A/Velib/src/steepest2optSolver.cpp
 solver.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/solver.hpp
+/home/raphael/Documents/3A/Velib/src/solver.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/stupidSolver.cpp
+/home/raphael/Documents/3A/Velib/src/stupidSolver.cpp
 solver.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/solver.hpp
+/home/raphael/Documents/3A/Velib/src/solver.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/tabooSolver.cpp
+/home/raphael/Documents/3A/Velib/src/tabooSolver.cpp
 solver.hpp
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/solver.hpp
+/home/raphael/Documents/3A/Velib/src/solver.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/test.hpp
+/home/raphael/Documents/3A/Velib/src/test.hpp
 
-/home/raphael/Documents/3A/SchoolProjects/Optimisation/Metaheuristics/proto_velib-20161105-07h49/src/util.hpp
+/home/raphael/Documents/3A/Velib/src/util.hpp
 stdlib.h
 -
 string
