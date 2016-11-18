@@ -1,0 +1,155 @@
+﻿Préambule (pour positionner votre environnement à l'ENSTA) :
+
+------------------------------------------------------------
+
+
+Environnement pour la ro
+
+Ceci est utile si votre code C++ utilise certaines bibliothèque stelles
+que cplex, ... 
+mais également pour pouvoir utilisé le validateur de solution
+`velib`
+
+    
+
+usediam ro
+
+
+
+Exemples d'utilisation de cmake et de make
+
+------------------------------------------
+
+    # Créer d'un sous-répertoire de travail
+    mkdir build
+    cd build
+
+    # Générer un ensemble de Makefiles avec gestion automatique des dépendances
+    cmake ..
+
+    # Compiler, lier et générer l'exécutable "run" dans le répertoire build
+    # (ou recompiler les seuls fichiers modifiés depuis la précédente compilation)
+    make
+
+    # Exécuter le programme compilé et afficher l'aide d'utilisation
+    ./run -h
+
+    # Modifier des fichiers sources (dans le répertoire src)
+    # puis relancer la compilation des seuls fichier nécessaires
+    make
+
+    # Supprimer les fichiers générés par la commande `make`
+    make clean
+
+    # Supprime tout ce qui est généré : vide entièrement le sous-répertoire build
+    # (attention si vous avez des solutions non sauvegardées !)
+    
+# Les Makefiles sont également supprimés : il faut donc les regénérer par la
+    
+# commande cmake ci-dessus.
+    
+make distclean
+    
+make cc
+
+
+    
+# Création d'archive compressées et datées **à coté** du projet c++
+    
+# Très utiles pour échanger les sources complète du projet entre vous, ou
+    
+# pour envoyer votre projat final à l'encadrement !
+    
+make tbz
+    
+make txz
+    
+# make zip (pas dispo)
+
+
+    
+Pour décompresser une de ces archives, vous devez
+    
+- vous positionner dans le répertoire contenant cette archive (grand-parent)
+    
+- taper les commandes suivantes
+      
+tar -xjf myproject-201611xx.tbz
+    
+- et renommer le répertoire décompressé avant de le modifier
+      
+mv myproject-2013xxxx myproject
+      
+(la nouvelle date sera ajouté automatiquement lors du prochain archivage
+      par `make tbz`)
+
+
+
+Exemple d'utilisation du programme prototype
+
+--------------------------------------------
+
+    
+# exécution du programme et afficher l'aide d'utilisation du programme
+    
+./run -h
+
+    
+# affichage d'un petit exemple exploitant les options
+    
+./run -H
+
+    
+# Exemples d'utilisation du "glouton stupide"
+    
+./run  --action stupid ../data/v0.dat
+    
+./run  --stupid ../data/v0.dat
+    
+./run  -S ../data/v0.dat
+      
+ lit et résoud une instance avec le solver StupidSolver
+       
+avec affichage standard d'informations (par -L 2)
+       la solution est affichée sur la sortie standard et enregistrée
+       dans un fichier sous la forme vN-D-LLL.sol (e.g. v0-4-406.sol)
+    ./run  --stupid  ../data/v0.dat -L 5
+       même chose mais affiche plus d'informations (par -L 5)
+
+
+    # Exemples d'utilisation de la méthode de Monte Carlo
+    ./run  --carlo ../data/v0.dat
+    ./run  -C ../data/v0.dat
+       Méthod de Monte Carlo appliquée à l'instance v0
+    ./run  --carlo ../data/v0.dat -N 5000
+       Même chose en 5000 itérations
+       (trouve l'optimum pour v0 avec les briques d'équilibrage et d'insertion correctes)
+
+    # Exemple du paramètrage fin de la méthode de Monte Carlo
+    ./run  --carlo ../data/v0.dat -N 1 --rchooser ALT --schooser INST --sinserter BACK
+       - Une seule itération de glouton (-N 1)
+       - Chaque remorque est choisie à tour de rôle (--rchooser ALT)
+       - les stations sont choisies dans l'ordre de l'instance (--schooser INST)
+       - chaque station est ajoutée en fin de circuit (-sinserter BACK)
+       => ceci reproduit le même glouton (déterministe) que StupidSolver !
+
+    ./run  --glouton ../data/v0.dat
+       Méthode glouton (intelligent) **À FAIRE**
+
+    ./run  --recuit ../data/v0.dat
+       Méthode de recuit simulé **À FAIRE**
+
+Validation des solutions
+------------------------
+
+Un validateur écrit en Ruby est disponible sur le réseau de l'ensta (après
+avoir tapé la commande `usediam ro` dans votre terminal).
+
+    usediam ro # à taper une seul fois dans le terminal courant
+    velib -h
+    => liste des options disponibles
+    velib -H
+    => idem avec quelques exemples
+
+
+# MD ./
