@@ -95,8 +95,8 @@ public:
         return U::to_s(this->desequilibre) + "-" + U::to_s(this->length);
     }
 
-    // Return optimal value of the circuit
-    int optimalInitialLoad();
+    // Return the initial load that minimizes the score on the circuit
+    int optimal_initial_load();
 
     // procède à la mise à jour des attributs charge_init, charges et depots
     // de façon à equilibrer au mieux les stations gérées par la remorque de ce

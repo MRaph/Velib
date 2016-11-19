@@ -4,7 +4,7 @@ void test_initial_load() {
     Remorque* rem = remorques->at(0);
     Circuit circuit = Circuit(inst, rem);
 
-    int k = circuit.optimalInitialLoad();
+    int k = 0;
     printf("Optimal initial load : %i", k);
 }
 

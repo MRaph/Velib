@@ -76,60 +76,59 @@ void Circuit::update() {
 }
 
 
-int Circuit::optimalInitialLoad() {
-  int capacityRemorque = this->remorque->getCapa();
-  int kmax = capacityRemorque;
-  int kmin = 0;
-  int ksup = kmax;
-  int kinf = kmin;
-  int lmin = kinf;
-  int lmax = ksup;
-  int deficit, lackOfSpace, lackOfBikes;
-  printf("Hello world\n");
-  for (auto it = this->stations->begin(); it != this->stations->end(); ++it) {
-    printf("Hello world\n");
-    Station* station = *it;
-    logn6(station->to_s_long());
-    deficit = station->deficit();
-    if (deficit < 0) {
-      //Bikes from station to remorque
-      lackOfSpace = abs(abs(deficit)-(capacityRemorque-lmax));
-      if (abs(deficit)>capacityRemorque-lmax) {
-        //Not enough space on the remorque for all bikes
-        ksup -= lackOfSpace;
-        if (ksup <= kinf) {
-          return kinf;
+int Circuit::optimal_initial_load() {
+    int capacityRemorque = this->remorque->getCapa();
+    int kmax = capacityRemorque;
+    int kmin = 0;
+    int ksup = kmax;
+    int kinf = kmin;
+    int lmin = kinf;
+    int lmax = ksup;
+    int deficit, lackOfSpace, lackOfBikes;
+    for (auto it = this->stations->begin(); it != this->stations->end(); ++it) {
+        Station* station = *it;
+        logn6(station->to_s_long());
+        deficit = station->deficit();
+        if (deficit < 0) {
+            //Bikes from station to remorque
+            lackOfSpace = abs(abs(deficit)-(capacityRemorque-lmax));
+            if (abs(deficit)>capacityRemorque-lmax) {
+                //Not enough space on the remorque for all bikes
+                ksup -= lackOfSpace;
+                if (ksup <= kinf) {
+                    return kinf;
+                }
+            }
+            lmin = min(kmax, lmin+abs(deficit));
+            lmax = min(kmax, lmax+abs(deficit));
+        } else if (deficit > 0) {
+            //Bikes from remorque to station
+            if (abs(deficit) <= lmin) {
+                //Enough bikes on the remorque
+                lmin -= abs(deficit);
+                lmax -= abs(deficit);
+            } else {
+                //Not enough bikes on the remorque
+                lackOfBikes = abs(lmin-abs(deficit));
+                kinf += lackOfBikes;
+                if (kinf >= ksup) {
+                    return ksup;
+                }
+                lmin = max(kmin, lmin-abs(deficit));
+                lmax = max(kmin, lmax-abs(deficit));
+            }
         }
-      }
-      lmin = min(kmax, lmin+abs(deficit));
-      lmax = min(kmax, lmax+abs(deficit));
-    } else if (deficit > 0) {
-      //Bikes from remorque to station
-      if (abs(deficit) <= lmin) {
-        //Enough bikes on the remorque
-        lmin -= abs(deficit);
-        lmax -= abs(deficit);
-      } else {
-        //Not enough bikes on the remorque
-        lackOfBikes = abs(lmin-abs(deficit));
-        kinf += lackOfBikes;
-        if (kinf >= ksup) {
-          return ksup;
-        }
-        lmin = max(kmin, lmin-abs(deficit));
-        lmax = max(kmin, lmax-abs(deficit));
-      }
     }
-  }
-  printf("kmin value: %i\n", kmin);
-  return kmin;
+    return kmin;
 }
 
 // Méthode d'équilibrage d'un circuit
 void Circuit::equilibrate_dummy() {
     logn6("Circuit::equilibrate BEGIN");
     int deficitStation, newDeficitStation, currentLoad, capacityLeft;
-    this->remorque->setLoad(this->optimalInitialLoad());
+    int initial_load = this->optimal_initial_load();
+    this->remorque->setLoad(initial_load);
+    printf("Initial load here : %i\n", initial_load);
     int capacityRemorque = this->remorque->getCapa();
 
 
@@ -183,6 +182,8 @@ void Circuit::equilibrate_dummy() {
     this->charge_init = 0; // même si c'est déjà fait par ailleurs !
     logn6("Circuit::equilibrate END");
 }
+
+//Method to equilibrate the deliveries on a circuit
 void Circuit::equilibrate() {
     Circuit::equilibrate_dummy();
 }

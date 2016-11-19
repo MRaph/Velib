@@ -222,7 +222,7 @@ Solution::save(Solution* sol, Options* args) {
         cout << sol->to_s_long();
     } else if (log1() ) {
         /// todo ?
-        cout << "[EN STABILO ?] SOLUTION TROUVÉE DE COÛT "
+        cout << "SOLUTION TROUVÉE DE COÛT "
              << sol->get_cost_string()
              << " (soit " << sol->get_cost() << ")"
              << endl;
