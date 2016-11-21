@@ -33,18 +33,26 @@ string Remorque::to_s_long() {
 }
 
 int Remorque::getCapa() {
-  return this->capa;
+    return this->capa;
 }
 
 void Remorque::setCapa(int val){
-  this->capa = val;
+    this->capa = val;
 }
 
 int Remorque::getLoad() {
-  return this->capa;
+    return this->capa;
 }
 
 void Remorque::setLoad(int val){
-  this->load = val;
+    this->load = val;
+}
+
+void Remorque::addBikes(int val) {
+    this->load += val;
+}
+
+void Remorque::removeBikes(int val) {
+    this->load -= val;
 }
 //./

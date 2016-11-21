@@ -145,10 +145,14 @@ void Circuit::equilibrate_dummy() {
             //On prend des vélos de la remorque pour les mettre dans la station
             (*this->charges)[station] = 0;
             if (deficit_station < current_load) {
+                printf("Current load %i", current_load);
+                printf("Depot de %i vélos", deficit_station);
                 station->addBikes(deficit_station);
+                this->remorque->removeBikes(deficit_station);
                 (*this->depots)[station] = deficit_station;
             } else {
                 station->addBikes(current_load);
+                this->remorque->removeBikes(current_load);
                 (*this->depots)[station] = current_load;
             }
         } else if (deficit_station < 0) {
@@ -158,10 +162,12 @@ void Circuit::equilibrate_dummy() {
                 //On a la place nécessaire pour mettre tous les vélos et se ramener à l'idéal
                 (*this->charges)[station] = abs(deficit_station);
                 station->removeBikes(abs(deficit_station));
+                this->remorque->addBikes(abs(deficit_station));
             } else {
                 //On met le maximum de vélos possibles, le déséquilibre sera non nul
                 (*this->charges)[station] = capacity_remorque_left;
                 station->removeBikes(capacity_remorque_left);
+                this->remorque->addBikes(abs(deficit_station));
             }
         } else {
             (*this->depots)[station] = 0;

@@ -27,5 +27,8 @@ public:
     int getLoad();
     void setLoad(int val);
 
+    void addBikes(int val);
+    void removeBikes(int val);
+
 };
 #endif
