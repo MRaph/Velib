@@ -36,23 +36,7 @@ int Remorque::getCapa() {
     return this->capa;
 }
 
-void Remorque::setCapa(int val){
-    this->capa = val;
-}
-
 int Remorque::getLoad() {
     return this->capa;
-}
-
-void Remorque::setLoad(int val){
-    this->load = val;
-}
-
-void Remorque::addBikes(int val) {
-    this->load += val;
-}
-
-void Remorque::removeBikes(int val) {
-    this->load -= val;
 }
 //./

@@ -33,7 +33,10 @@ public:
     Remorque* remorque;
 
     // charge initiale de la remorque
-    int charge_init;
+    int charge_init=0;
+
+    // charge en cours
+    int current_load=0;
 
     // les stations visitées
     list<Station*>* stations;
@@ -48,7 +51,7 @@ public:
     map<Station*,int>* charges;
 
     // Désequilibre total (toujours positif ou nul !)
-    int desequilibre;
+    int desequilibre=0;
 
     // longueur de ce circuit
     int length;
@@ -102,6 +105,7 @@ public:
     // de façon à equilibrer au mieux les stations gérées par la remorque de ce
     // circuit.
     void equilibrate_dummy(); // version bidon pour le proto élèves
+    void equilibrate_circuit(); //Premiere brique
     void equilibrate();       // version à créer
 
     void insert(Station* s, int pos=0);

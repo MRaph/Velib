@@ -41,11 +41,4 @@ int Station::deficit() {
     return this->ideal - this->nbvp;
 }
 
-void Station::addBikes(int val) {
-    this->nbvp += val;
-}
-
-void Station::removeBikes(int val) {
-    this->nbvp -= val;
-}
 //./

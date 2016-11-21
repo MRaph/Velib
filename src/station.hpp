@@ -24,9 +24,6 @@ public:
     virtual string to_s();
     virtual string to_s_long();
 
-    void addBikes(int val);
-    void removeBikes(int val);
-
     int getNbvp() {
         return this->nbvp;
     }
