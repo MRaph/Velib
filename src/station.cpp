@@ -42,10 +42,10 @@ int Station::deficit() {
 }
 
 void Station::addBikes(int val) {
-  this->nbvp += val;
+    this->nbvp += val;
 }
 
 void Station::removeBikes(int val) {
-  this->nbvp -= val;
+    this->nbvp -= val;
 }
 //./

@@ -127,15 +127,17 @@ void Circuit::equilibrate_dummy() {
     logn6("Circuit::equilibrate BEGIN");
     int deficit_station, newdeficit_station, current_load, capacity_remorque_left;
     int initial_load = this->optimal_initial_load();
-    this->remorque->setLoad(initial_load);
-    printf("Initial load here : %i\n", initial_load);
-    int capacity_remorque = this->remorque->getCapa();
+    Remorque* remorque = this->remorque;
+    remorque->setLoad(initial_load);
+    int capacity_remorque = remorque->getCapa();
+    printf("Remorque %i with load %i\n", remorque->id, remorque->load);
 
 
     for (auto it = this->stations->begin(); it != this->stations->end(); ++it) {
+        printf("---\n");
         Station* station = *it;
         deficit_station = station->deficit();
-        current_load = this->remorque->getLoad();
+        current_load = remorque->getLoad();
         capacity_remorque_left = capacity_remorque-current_load;
 
         logn7(station->to_s_long());
@@ -145,29 +147,55 @@ void Circuit::equilibrate_dummy() {
             //On prend des vélos de la remorque pour les mettre dans la station
             (*this->charges)[station] = 0;
             if (deficit_station < current_load) {
-                printf("Current load %i", current_load);
-                printf("Depot de %i vélos", deficit_station);
+                printf("Cas Depot 1\n");
+                printf("Current load %i\n", current_load);
+                printf("Depot de %i vélos\n", deficit_station);
+                printf("Vélos dans la station : %i\n", station->getNbvp());
                 station->addBikes(deficit_station);
-                this->remorque->removeBikes(deficit_station);
+                printf("Après dépot : %i\n", station->getNbvp());
+                printf("Vélos sur la remorque : %i\n", remorque->getLoad());
+                remorque->removeBikes(deficit_station);
+                printf("Après dépot : %i\n", remorque->getLoad());
                 (*this->depots)[station] = deficit_station;
             } else {
+                printf("Cas Depot 2\n");
+                printf("Current load %i\n", current_load);
+                printf("Depot de %i vélos\n", current_load);
+                printf("Vélos dans la station : %i\n", station->getNbvp());
                 station->addBikes(current_load);
-                this->remorque->removeBikes(current_load);
+                printf("Après dépot : %i\n", station->getNbvp());
+                printf("Vélos sur la remorque : %i\n", remorque->getLoad());
+                remorque->removeBikes(current_load);
+                printf("Après dépot : %i\n", remorque->getLoad());
                 (*this->depots)[station] = current_load;
             }
         } else if (deficit_station < 0) {
             //On met des vélos de la station sur la remorque
             (*this->depots)[station] = 0;
             if (capacity_remorque_left > abs(deficit_station)) {
+                printf("Cas Charge 1\n");
+                printf("Current load %i\n", current_load);
+                printf("Charge de %i vélos\n", deficit_station);
                 //On a la place nécessaire pour mettre tous les vélos et se ramener à l'idéal
                 (*this->charges)[station] = abs(deficit_station);
+                printf("Vélos dans la station : %i\n", station->getNbvp());
                 station->removeBikes(abs(deficit_station));
-                this->remorque->addBikes(abs(deficit_station));
+                printf("Après charge : %i\n", station->getNbvp());
+                printf("Vélos sur la remorque : %i\n", remorque->getLoad());
+                remorque->addBikes(abs(deficit_station));
+                printf("Après charge : %i\n", remorque->getLoad());
             } else {
+                printf("Cas Charge 2\n");
+                printf("Current load %i\n", current_load);
+                printf("Charge de %i vélos\n", capacity_remorque_left);
                 //On met le maximum de vélos possibles, le déséquilibre sera non nul
                 (*this->charges)[station] = capacity_remorque_left;
+                printf("Vélos dans la station : %i\n", station->getNbvp());
                 station->removeBikes(capacity_remorque_left);
-                this->remorque->addBikes(abs(deficit_station));
+                printf("Après charge : %i\n", station->getNbvp());
+                printf("Vélos sur la remorque : %i\n", remorque->getLoad());
+                remorque->addBikes(abs(deficit_station));
+                printf("Après charge : %i\n", remorque->getLoad());
             }
         } else {
             (*this->depots)[station] = 0;
@@ -186,7 +214,6 @@ void Circuit::equilibrate_dummy() {
 
 //Method to equilibrate the deliveries on a circuit
 void Circuit::equilibrate() {
-    printf("New equilibrate\n");
     Circuit::equilibrate_dummy();
 }
 

@@ -27,5 +27,9 @@ public:
     void addBikes(int val);
     void removeBikes(int val);
 
+    int getNbvp() {
+        return this->nbvp;
+    }
+
 };
 #endif
