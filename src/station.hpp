@@ -28,5 +28,9 @@ public:
         return this->nbvp;
     }
 
+    int getIdeal() {
+        return this->ideal;
+    }
+
 };
 #endif

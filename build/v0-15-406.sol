@@ -15,8 +15,8 @@ end
 
 # Circuit associé à la remorque r2 de capa 4
 #       id, charge_init, desequ, longueur
-circuit r2        0        9       242
-  s2 0
+circuit r2        4        9       242
+  s2 4
   s4 -1
   s6 -3
   s8 4
