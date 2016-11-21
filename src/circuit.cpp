@@ -142,11 +142,8 @@ void Circuit::equilibrate_circuit() {
     this->charge_init = initial_load;
     this->current_load = initial_load;
     int capacity_remorque = remorque->getCapa();
-    printf("Remorque %i with load %i\n", remorque->id, this->current_load);
-
 
     for (auto it = this->stations->begin(); it != this->stations->end(); ++it) {
-        printf("---\n");
         Station* station = *it;
         desequilibre_station = station->deficit();
         capacity_remorque_left = capacity_remorque-this->current_load;
