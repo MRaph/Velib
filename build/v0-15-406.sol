@@ -8,8 +8,8 @@ distance 406
 #       id, charge_init, desequ, longueur
 circuit r1        0        6       164
   s1 0
-  s3 0
-  s5 0
+  s3 -3
+  s5 -2
   s7 0
 end
 
@@ -17,8 +17,8 @@ end
 #       id, charge_init, desequ, longueur
 circuit r2        0        9       242
   s2 0
-  s4 0
-  s6 0
+  s4 -1
+  s6 -3
   s8 4
 end
 
