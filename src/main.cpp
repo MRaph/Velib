@@ -38,8 +38,7 @@ void stupid_solver_action(Options* args) {
     StupidSolver* solver = new StupidSolver(inst);
     solver->solve();
     if (solver->found) {
-        //Solution::save(solver->get_solution(), args);
-        printf("Solution save is deactivated in main.cpp:41.\n");
+        Solution::save(solver->get_solution(), args);
     } else {
         cout << "StupidSolver : pas de solution" << endl;
     }

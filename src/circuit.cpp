@@ -77,8 +77,8 @@ void Circuit::update() {
 
 
 int Circuit::optimal_initial_load() {
-    int capacityRemorque = this->remorque->getCapa();
-    int kmax = capacityRemorque;
+    int capacity_remorque = this->remorque->getCapa();
+    int kmax = capacity_remorque;
     int kmin = 0;
     int ksup = kmax;
     int kinf = kmin;
@@ -91,8 +91,8 @@ int Circuit::optimal_initial_load() {
         deficit = station->deficit();
         if (deficit < 0) {
             //Bikes from station to remorque
-            lackOfSpace = abs(abs(deficit)-(capacityRemorque-lmax));
-            if (abs(deficit)>capacityRemorque-lmax) {
+            lackOfSpace = abs(abs(deficit)-(capacity_remorque-lmax));
+            if (abs(deficit)>capacity_remorque-lmax) {
                 //Not enough space on the remorque for all bikes
                 ksup -= lackOfSpace;
                 if (ksup <= kinf) {
@@ -125,66 +125,62 @@ int Circuit::optimal_initial_load() {
 // Méthode d'équilibrage d'un circuit
 void Circuit::equilibrate_dummy() {
     logn6("Circuit::equilibrate BEGIN");
-    int deficitStation, newDeficitStation, currentLoad, capacityLeft;
+    int deficit_station, newdeficit_station, current_load, capacity_remorque_left;
     int initial_load = this->optimal_initial_load();
     this->remorque->setLoad(initial_load);
     printf("Initial load here : %i\n", initial_load);
-    int capacityRemorque = this->remorque->getCapa();
+    int capacity_remorque = this->remorque->getCapa();
 
 
     for (auto it = this->stations->begin(); it != this->stations->end(); ++it) {
         Station* station = *it;
-        deficitStation = station->deficit();
-        currentLoad = this->remorque->getLoad();
-        capacityLeft = capacityRemorque-currentLoad;
+        deficit_station = station->deficit();
+        current_load = this->remorque->getLoad();
+        capacity_remorque_left = capacity_remorque-current_load;
 
         logn7(station->to_s_long());
-        // la remorque ne dépose rien à cette station
         logn7("Circuit::equilibrate: avant maj depots");
 
-        if (deficitStation > 0) {
-
-        } else if (deficitStation < 0) {
-          //On met des vélos de la station sur la remorque
-          (*this->depots)[station] = 0;
-          if (capacityLeft > abs(deficitStation)) {
-            //On a la place nécessaire pour mettre tous les vélos et se ramener à l'idéal
-            (*this->charges)[station] = abs(deficitStation);
-            station->removeBikes(abs(deficitStation));
-          } else {
-            //On met le maximum de vélos possibles, le déséquilibre sera non nul
-            (*this->charges)[station] = capacityLeft;
-            this->desequilibre += abs(capacityLeft-abs(deficitStation));
-            station->removeBikes(abs(capacityLeft - abs(deficitStation)));
-          }
+        if (deficit_station > 0) {
+            //On prend des vélos de la remorque pour les mettre dans la station
+            (*this->charges)[station] = 0;
+            if (deficit_station < current_load) {
+                station->addBikes(deficit_station);
+                (*this->depots)[station] = deficit_station;
+            } else {
+                station->addBikes(current_load);
+                (*this->depots)[station] = current_load;
+            }
+        } else if (deficit_station < 0) {
+            //On met des vélos de la station sur la remorque
+            (*this->depots)[station] = 0;
+            if (capacity_remorque_left > abs(deficit_station)) {
+                //On a la place nécessaire pour mettre tous les vélos et se ramener à l'idéal
+                (*this->charges)[station] = abs(deficit_station);
+                station->removeBikes(abs(deficit_station));
+            } else {
+                //On met le maximum de vélos possibles, le déséquilibre sera non nul
+                (*this->charges)[station] = capacity_remorque_left;
+                station->removeBikes(capacity_remorque_left);
+            }
         } else {
-          (*this->depots)[station] = 0;
-          (*this->charges)[station] = 0;
+            (*this->depots)[station] = 0;
+            (*this->charges)[station] = 0;
         }
-
-        // Deux solutions pour ajouter un élément dans un pointeur de map, mais
-        // aucune n'est élégante !
-        //  this->depots->insert(std::pair<Station*,int>(station,0));
-        // (*this->depots)[station] = 0;
-
-        // le nouveau contenu de la remorque reste donc inchangé
-        logn7("Circuit::equilibrate: avant maj charges");
-        // this->charges->insert(std::pair<Station*,int>(station,this->charge_init));
-        // (*this->charges)[station] = this->charge_init;
 
         // incrémentation du desequilibre du circuit
         logn7("Circuit::equilibrate: avant maj desequilibre");
-        newDeficitStation = station->deficit();
-        this->desequilibre += abs(newDeficitStation);
+        newdeficit_station = station->deficit();
+        this->desequilibre += abs(newdeficit_station);
     }
-    // Calcul savant de la charge initiale de la remorque pour garantir les
-    // dépots et retraits qui viennent d'être calculés
-    this->charge_init = 0; // même si c'est déjà fait par ailleurs !
+
+    printf("desequilibre : %i\n", this->desequilibre);
     logn6("Circuit::equilibrate END");
 }
 
 //Method to equilibrate the deliveries on a circuit
 void Circuit::equilibrate() {
+    printf("New equilibrate\n");
     Circuit::equilibrate_dummy();
 }
 
