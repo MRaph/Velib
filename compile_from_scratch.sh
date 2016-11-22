@@ -9,7 +9,7 @@ cmake .. > tmp.log
 echo "make"
 make
 echo "Running project"
-if [ $# -eq 0 -o $# -eq 1]
+if [ $# -eq 0 -o $# -eq 1 ]
 then
   echo "Missing algorithm name or data file path. Using stupid and v0.dat"
   ./run --stupid ../data/v0.dat
