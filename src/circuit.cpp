@@ -308,15 +308,20 @@ Station* Circuit::erase(int pos) {
 }
 
 Circuit* Circuit::mutate_2opt(int i, int j) {
-    /*printf("Start mutate_2opt\n");
+    printf("Start mutate_2opt\n");
     Circuit* circuit_mutated = new Circuit(this);
     printf("Copy made\n");
     printf("(%i, %i)\n", i, j);
-    Station* tmp_station = (*this->stations)[j];
-    printf("Getting element j\n");
-    circuit_mutated->stations[i] = tmp_station;
+    auto stations_it = this->stations->begin();
+    std::advance(stations_it, i);
+    Station* station_i = *stations_it;
+    stations_it = this->stations->begin();
+    std::advance(stations_it, j);
+    Station* station_j = *stations_it;
+    /*printf("Getting element j\n");
+    circuit_mutated->stations[i] = station_j;
     printf("Assigning j to i\n");
-    circuit_mutated->stations[j] = this->stations[i];
+    circuit_mutated->stations[j] = station_i;
     printf("Assigning i to j\n");
     printf("End mutate_2opt\n");
     return circuit_mutated;*/
