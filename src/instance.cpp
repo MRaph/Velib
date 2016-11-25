@@ -296,7 +296,7 @@ Arc* Instance::get_arc(Site* s1, Site* s2) {
 }
 int Instance::get_dist(Site* s1, Site* s2) {
     // return (*dists_grid)[s1->sid * this->get_nb_sites() + s2->sid];;
-    return (*dists_grid)[s1->id * this->get_nb_sites() + s2->id];;
+    return (*dists_grid)[s1->id * this->get_nb_sites() + s2->id];
 }
 
 // Construit les arcs associés aux stations et à la remorque en paramètre,

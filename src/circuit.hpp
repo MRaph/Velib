@@ -121,6 +121,12 @@ public:
     // void move(int pos1, int pos2);
     // void move_to(int pos1, Circuit* other, int pos2);
 
+    // Return the circuit where stations i and j are mutated
+    Circuit* mutate_2opt(int i, int j);
+
+    // Return the best circuit using mutations
+    Circuit* mutate_2opt_best();
+
 
     void reverse_branch(int pos1, int pos2);
 

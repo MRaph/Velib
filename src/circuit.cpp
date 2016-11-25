@@ -69,10 +69,11 @@ void Circuit::clear() {
 // Recalcule l'équilibrage et met à jour les attributs dérivés
 void Circuit::update() {
     this->partial_clear();
-    this->equilibrate();
-
+    this->optimal_initial_load();
     // Mise à jour distance parcourue totale et déséquilibre global
     this->length = inst->get_dist(this->stations, this->remorque);
+    this->equilibrate();
+    this->mutate_2opt_best();
 }
 
 
@@ -305,6 +306,44 @@ Station* Circuit::erase(int pos) {
     logn5("Circuit::erase END");
     return station;
 }
+
+Circuit* Circuit::mutate_2opt(int i, int j) {
+    /*printf("Start mutate_2opt\n");
+    Circuit* circuit_mutated = new Circuit(this);
+    printf("Copy made\n");
+    printf("(%i, %i)\n", i, j);
+    Station* tmp_station = (*this->stations)[j];
+    printf("Getting element j\n");
+    circuit_mutated->stations[i] = tmp_station;
+    printf("Assigning j to i\n");
+    circuit_mutated->stations[j] = this->stations[i];
+    printf("Assigning i to j\n");
+    printf("End mutate_2opt\n");
+    return circuit_mutated;*/
+
+    return this;
+}
+
+Circuit* Circuit::mutate_2opt_best() {
+     Circuit* best_circuit = new Circuit(this);
+     int score = best_circuit->get_cost();
+     Circuit* curr_circuit;
+     int curr_score;
+     printf("Score actuel : %i\n", score);
+     for (int i=0; i<this->length-1; i++) {
+         for (int j=i+1; j<this->length; j++) {
+             curr_circuit = mutate_2opt(i, j);
+             curr_score = curr_circuit->get_cost();
+             if (curr_score < score) {
+                 score = curr_score;
+                 best_circuit = curr_circuit;
+                 printf("New circuit has been found with values (%i, %i)\n", i, j);
+             }
+         }
+     }
+     printf("New score : %i\n", score);
+     return best_circuit;
+ }
 
 // inversion d'un chemin dans le circuit (2opt)
 // inverse le chemin de parcours des stations comprises entre pos1 (inclue) et
