@@ -22,8 +22,8 @@ Solution::Solution(Instance* inst) {
     // this->length = 0;
     this->length = 999999999;
     this->desequilibre = 0;
-
 }
+
 Solution::Solution(const Solution* other)  {
     this->inst = other->inst;
     this->length = other->length;
@@ -36,7 +36,6 @@ Solution::Solution(const Solution* other)  {
 }
 
 Solution::~Solution() {
-
     for (unsigned i = 0; i < inst->remorques->size(); i++) {
         delete this->circuits->at(i);
     }
@@ -79,6 +78,7 @@ void Solution::copy(const Solution* other) {
         this->circuits->at(i)->copy(other->circuits->at(i));
     }
 }
+
 void Solution::clear() {
     length = 999999999;
     this->desequilibre = 0;
@@ -172,6 +172,7 @@ string Solution::to_s() {
     }
     return buf.str();
 }
+
 string Solution::to_s_lite() {
     ostringstream buf;
     for (unsigned i=0; i<circuits->size(); i++) {
@@ -182,6 +183,7 @@ string Solution::to_s_lite() {
     buf << "  => coût : " << this->get_cost_string() << endl;
     return buf.str();
 }
+
 // Fornat libre et verbeux
 string Solution::to_s_long() {
     // U::die("Solution::to_s_long : non implémentée");
@@ -257,7 +259,6 @@ Solution::save(Solution* sol, Options* args) {
         }
         U::write_file(args->outfilename, sol->to_s());
     }
-
 }
 
 //./

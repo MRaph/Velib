@@ -127,6 +127,9 @@ public:
     // Return the best circuit using mutations
     Circuit* mutate_2opt_best();
 
+    // Based on the actual circuit, do a steepest descent to find a local minimum nearby
+    Circuit* mutate_2opt_steepest(int nmax);
+
 
     void reverse_branch(int pos1, int pos2);
 

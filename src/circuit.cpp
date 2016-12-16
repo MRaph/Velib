@@ -14,6 +14,7 @@ Circuit::Circuit(Instance* inst, Remorque* remorque) {
     // this->depots = new vector<int>();
     // this->charges = new vector<int>();
 }
+
 Circuit::Circuit(Instance* inst, Remorque* remorque, list<Station*>* stations)
         : Circuit(inst, remorque) {
     this->stations->assign(stations->begin(), stations->end());
@@ -22,7 +23,6 @@ Circuit::Circuit(Instance* inst, Remorque* remorque, list<Station*>* stations)
 // Attention : ceci n'est pas le constructeur par copie car il prend un
 // **pointeur** en paramètre
 Circuit::Circuit(const Circuit* other) {
-
     // CECI FONCTIONNE AUSSI (avec copie des list et map le 22/2/2016)
     this->stations = new list<Station*>(*other->stations);  // ATTENTION aux *
     this->depots = new map<Station*,int>(*other->depots);  // ATTENTION aux *
@@ -308,25 +308,18 @@ Station* Circuit::erase(int pos) {
 }
 
 Circuit* Circuit::mutate_2opt(int i, int j) {
-    printf("Start mutate_2opt\n");
+    // Create new circuit as copy of the previous one
     Circuit* circuit_mutated = new Circuit(this);
-    printf("Copy made\n");
-    printf("(%i, %i)\n", i, j);
-    auto stations_it = this->stations->begin();
-    std::advance(stations_it, i);
-    Station* station_i = *stations_it;
-    stations_it = this->stations->begin();
-    std::advance(stations_it, j);
-    Station* station_j = *stations_it;
-    /*printf("Getting element j\n");
-    circuit_mutated->stations[i] = station_j;
-    printf("Assigning j to i\n");
-    circuit_mutated->stations[j] = station_i;
-    printf("Assigning i to j\n");
-    printf("End mutate_2opt\n");
-    return circuit_mutated;*/
+    // Now we have to swap elements i and j in the list of stations
+    list<Station*>::iterator it_i = circuit_mutated->stations->begin();
+    list<Station*>::iterator it_j = circuit_mutated->stations->begin();
+    std::advance(it_i, i);
+    std::advance(it_j, j);
+    Station* tmp = *it_i;
+    *it_i = *it_j;
+    *it_j = tmp;
 
-    return this;
+    return circuit_mutated;
 }
 
 Circuit* Circuit::mutate_2opt_best() {
@@ -334,7 +327,6 @@ Circuit* Circuit::mutate_2opt_best() {
      int score = best_circuit->get_cost();
      Circuit* curr_circuit;
      int curr_score;
-     printf("Score actuel : %i\n", score);
      for (int i=0; i<this->length-1; i++) {
          for (int j=i+1; j<this->length; j++) {
              curr_circuit = mutate_2opt(i, j);
@@ -342,12 +334,28 @@ Circuit* Circuit::mutate_2opt_best() {
              if (curr_score < score) {
                  score = curr_score;
                  best_circuit = curr_circuit;
-                 printf("New circuit has been found with values (%i, %i)\n", i, j);
              }
          }
      }
      printf("New score : %i\n", score);
      return best_circuit;
+ }
+
+ Circuit* Circuit::mutate_2opt_steepest(int nmax) {
+     Circuit* old_circuit = new Circuit(this);
+     int old_score = old_circuit->get_cost();
+     Circuit* new_circuit = old_circuit->mutate_2opt_best();
+     int new_score = new_circuit->get_cost();
+     int count = 0;
+     while (count < nmax && new_score < old_score) {
+         count+=1;
+         old_circuit = new_circuit;
+         new_circuit = old_circuit->mutate_2opt_best();
+         old_score = new_score;
+         new_score = new_circuit->get_cost();
+     }
+     printf("Called mutate_2opt_best %i times", count);
+     return new_circuit;
  }
 
 // inversion d'un chemin dans le circuit (2opt)
