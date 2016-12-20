@@ -103,8 +103,11 @@ public:
 
     Steepest2optSolver(Instance* Instance);
     virtual ~Steepest2optSolver();
+    virtual bool solve_stupid();
     virtual bool solve();
     virtual void mutate(Solution* sol);
+    Solution* Stupid_solver(Solution* sol);
+    
 
     virtual Solution* get_solution() {return this->bestsol;};
 };

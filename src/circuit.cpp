@@ -73,7 +73,16 @@ void Circuit::update() {
     // Mise à jour distance parcourue totale et déséquilibre global
     this->length = inst->get_dist(this->stations, this->remorque);
     this->equilibrate();
-    this->mutate_2opt_best();
+    //printf("Score avant mutation ----------------: %i\n", this->get_cost());
+    //cout << this->to_s() << endl;
+    //Circuit* circuit_mutated = this->mutate_2opt_steepest(10);
+    //circuit_mutated->partial_clear();
+    //circuit_mutated->optimal_initial_load();
+    // // Mise à jour distance parcourue totale et déséquilibre global
+    //circuit_mutated->length = inst->get_dist(circuit_mutated->stations, circuit_mutated->remorque);
+    //circuit_mutated->equilibrate();
+    //printf("Score apr�s mutation-------------- : %i\n", circuit_mutated->get_cost());
+    //cout << circuit_mutated->to_s() << endl;
 }
 
 
@@ -308,33 +317,45 @@ Station* Circuit::erase(int pos) {
 }
 
 Circuit* Circuit::mutate_2opt(int i, int j) {
-    // Create new circuit as copy of the previous one
+   // Create new circuit as copy of the previous one
     Circuit* circuit_mutated = new Circuit(this);
+    if (i>=j){
+        cout << "Erreur de mutate_2opt : i=" << i << " sup�rieur � j=" << j << endl;
+    }
+    else {
     // Now we have to swap elements i and j in the list of stations
     list<Station*>::iterator it_i = circuit_mutated->stations->begin();
     list<Station*>::iterator it_j = circuit_mutated->stations->begin();
     std::advance(it_i, i);
     std::advance(it_j, j);
+
     Station* tmp = *it_i;
     *it_i = *it_j;
     *it_j = tmp;
-
+    }
+   	circuit_mutated->update();     
     return circuit_mutated;
+    
+    
 }
 
 Circuit* Circuit::mutate_2opt_best() {
      Circuit* best_circuit = new Circuit(this);
      int score = best_circuit->get_cost();
-     Circuit* curr_circuit;
      int curr_score;
-     for (int i=0; i<this->length-1; i++) {
-         for (int j=i+1; j<this->length; j++) {
-             curr_circuit = mutate_2opt(i, j);
-             curr_score = curr_circuit->get_cost();
-             if (curr_score < score) {
-                 score = curr_score;
-                 best_circuit = curr_circuit;
-             }
+    
+     for (int i=0; i<this->stations->size()-1; i++) {
+         for (int j=i+1; j<this->stations->size(); j++) {
+           Circuit* curr_circuit = this->mutate_2opt(i,j);
+           //curr_circuit->partial_clear();
+           //curr_circuit->optimal_initial_load();
+           //curr_circuit->length = inst->get_dist(curr_circuit->stations, curr_circuit->remorque);
+           //curr_circuit->equilibrate();
+           curr_score = curr_circuit->get_cost();
+           if (curr_score < score) {
+               score = curr_score;
+               best_circuit = curr_circuit;
+                   }
          }
      }
      printf("New score : %i\n", score);
@@ -354,7 +375,7 @@ Circuit* Circuit::mutate_2opt_best() {
          old_score = new_score;
          new_score = new_circuit->get_cost();
      }
-     printf("Called mutate_2opt_best %i times", count);
+     printf("Called mutate_2opt_best %i times \n", count);
      return new_circuit;
  }
 
@@ -372,27 +393,23 @@ Circuit* Circuit::mutate_2opt_best() {
 // - LA SOLUTION N'EST PAS MISE À JOUR ! (pas de update)
 //
 void Circuit::reverse_branch(int pos1, int pos2) {
-    U::die("Circuit::reverse_branch: méthode non implémentée !");
     //
-    // 1. vérification des paramèters pos1 et pos2 (on assure pos1 < pos2)
-    //
-    // ...
-
-    //
-    // 2. déclaration et positionnement itérateurs associés aux positions
+    // 1. v�rification des param�ters pos1 et pos2 (on assure pos1 < pos2)
     //
     // ...
 
     //
-    // 3. inversion de la branche (avec méthode splice de la STL)
+    // 2. d�claration et positionnement it�rateurs associ�s aux positions
+    //
+    // ...
+
+    //
+    // 3. inversion de la branche (avec m�thode splice de la STL)
     //
     // ...
 }
-
-
-// void Circuit::reverse_branch_test() {
-//
-// }
+ 
+ 
 string Circuit::to_s() {
     stringstream buf;
     buf << "# Circuit associé à la remorque " <<  remorque->name <<

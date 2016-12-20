@@ -66,7 +66,7 @@ void steepest2opt_solver_action(Options* args) {
     logn1("steepest2opt_solver_action BEGIN");
     Instance* inst = new Instance(args->filename, args);
     Steepest2optSolver* solver = new Steepest2optSolver(inst);
-    solver->solve();
+    solver->solve_stupid();
     if (solver->found) {
         Solution::save(solver->get_solution(), args);
     } else {
