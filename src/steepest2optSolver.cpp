@@ -20,9 +20,7 @@ Steepest2optSolver::~Steepest2optSolver()  {
 }
 
 
-// Codé par Mathilde :
-
-// 1) Construction solution initiale par glouton aléatoire :----------------------------------------------------------------------------
+// 1) Construction solution initiale par glouton stupide :----------------------------------------------------------------------------
 // Pareil que StupidSolver::solve() mais retourne une sol et non pas un bool :
 Solution* Steepest2optSolver::Stupid_solver(Solution* sol) {
     if (log3()) {
@@ -57,16 +55,67 @@ Solution* Steepest2optSolver::Stupid_solver(Solution* sol) {
 };
 
 
+// Construction solution initiale par glouton aleatoire :----------------------------------------------------------------------------
+// On reprend la fonction apply_one_greedy du CarloSolver 
 
-// 2)Méthode stupid de ce solver :----------------------------------------------------------------------------
+// Construire la solution en paramètre par un glouton.
+// Principe : On prend les stations dans l'ordre de l'instance, puis
+// on les affecte à chaque remorque.
+// - la remorque est sélectionnée selon l'option remorque_chooser
+// - la station est tirée au hazard selon l'option station_chooser
+// - le mode d'insertion d'une station dans le circuit courant de la
+//   remorque est sélectionné selon l'option station_inserter
+//
+// La solution passée en paramètre est vidée puis recontruite mais
+// l'objet reste le même : il est simplement modifié.
+// L'objet Solution passé en paramètre est donc entièrement gérée par la
+// méthode appelante (construction puis destruction).
+//
+
+Solution* Steepest2optSolver::glouton_aleatoire(Solution* sol) {
+    logn4("Steepest2optSolver::apply_one_greedy BEGIN");
+    sol->clear();
+
+    auto stations = new vector<Station*>(*inst->stations);
+    if (Options::args->station_chooser == "RAND") {
+        // On mélange le vector par la lib standard c++
+        random_shuffle(stations->begin(), stations->end());
+    };
+
+    int remorque_id = -1; // sélection des remorques à tour de rôle
+    for (unsigned j = 0; j < stations->size(); j++) {
+        Station* station = stations->at(j);
+
+        auto rchooser = Options::args->remorque_chooser;
+        if (rchooser == "ALT") {
+            remorque_id = (remorque_id + 1) % inst->remorques->size();
+        } else if (rchooser == "RAND") {
+            remorque_id = rand() % inst->remorques->size();
+        } else {
+            U::die("remorque_chooser inconnu : " + U::to_s(rchooser));
+        }
+        Circuit* circuit = sol->circuits->at(remorque_id);
+
+        // if (circuit->remorque->name == "r2" && station->name == "s8") {
+        //     Log::level += 7;
+        // }
+        circuit->insert_from_option(station);
+    }
+    logn5("Steepest2optSolver::apply_one_greedy: avant appel à sol->update");
+    sol->update();
+
+    logn4("Steepest2optSolver::apply_one_greedy END");
+    return sol;
+};
+
+
+// 2)Methode stupid de ce solver :----------------------------------------------------------------------------
 // "Effectue une seule descente à partir de la solution (deterministe) issue du glouton StupidSolver"
 bool Steepest2optSolver::solve_stupid() {
 
     this->cursol = new Solution(inst);
     this->cursol = Stupid_solver(this->cursol);
-    logn1("Stupid_solveur a pour valeur "+this->cursol->get_cost_string());
     mutate(this->cursol); 
-    logn1(" Après descente, valeur "+this->cursol->get_cost_string()+"\n");
     this->bestsol->copy(this->cursol);
     this->found = true;
     return found;
@@ -75,18 +124,30 @@ bool Steepest2optSolver::solve_stupid() {
 
 
 
-// 3)Méthode principale de ce solver :----------------------------------------------------------------------------
-// S'enchaîne un nombre paramétrable de fois : on utilise la classe Option !
+// 3)Methode principale de ce solver :----------------------------------------------------------------------------
+// S'enchaine un nombre parametrable de fois : on utilise la classe Option !
 bool Steepest2optSolver::solve() {
 
-// Modifier la classe options pour choisir itération
+    Options* args = Options::args;
+    int itermax = args->itermax;
+    this->bestsol->copy(this->testsol);
+
+    for(int i=1; i<itermax; i++){
+        printf("Iteration %i du steepestSolver \n",i);
+        this->cursol = new Solution(inst);
+        this->cursol = glouton_aleatoire(this->cursol);
+        mutate(this->cursol);
+
+        if(this->cursol->get_cost() < this->bestsol->get_cost()){
+            this->bestsol->copy(this->cursol);
+        }
+    }
+    this->found = true;
+    return found;
+};
 
 
-}
-
-
-// 4) Effectue une mutation sur la solution en paramètre :----------------------------------------------------------------------------
-
+// 4) Effectue une mutation sur la solution en parametre :----------------------------------------------------------------------------
 void Steepest2optSolver::mutate(Solution* sol) {
     logn4("Steepest2optSolver::mutate BEGIN");
 

@@ -105,9 +105,9 @@ public:
     virtual ~Steepest2optSolver();
     virtual bool solve_stupid();
     virtual bool solve();
-    virtual void mutate(Solution* sol);
     Solution* Stupid_solver(Solution* sol);
-    
+    Solution* glouton_aleatoire(Solution* sol);
+    virtual void mutate(Solution* sol);    
 
     virtual Solution* get_solution() {return this->bestsol;};
 };
