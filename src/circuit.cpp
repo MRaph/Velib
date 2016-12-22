@@ -81,7 +81,7 @@ void Circuit::update() {
     // // Mise Ã  jour distance parcourue totale et dÃ©sÃ©quilibre global
     //circuit_mutated->length = inst->get_dist(circuit_mutated->stations, circuit_mutated->remorque);
     //circuit_mutated->equilibrate();
-    //printf("Score après mutation-------------- : %i\n", circuit_mutated->get_cost());
+    //printf("Score aprï¿½s mutation-------------- : %i\n", circuit_mutated->get_cost());
     //cout << circuit_mutated->to_s() << endl;
 }
 
@@ -317,48 +317,44 @@ Station* Circuit::erase(int pos) {
 }
 
 Circuit* Circuit::mutate_2opt(int i, int j) {
-   // Create new circuit as copy of the previous one
+    // Create new circuit as copy of the previous one
     Circuit* circuit_mutated = new Circuit(this);
     if (i>=j){
-        cout << "Erreur de mutate_2opt : i=" << i << " supérieur à j=" << j << endl;
-    }
-    else {
-    // Now we have to swap elements i and j in the list of stations
-    list<Station*>::iterator it_i = circuit_mutated->stations->begin();
-    list<Station*>::iterator it_j = circuit_mutated->stations->begin();
-    std::advance(it_i, i);
-    std::advance(it_j, j);
+        cout << "Erreur de mutate_2opt : i=" << i << " supï¿½rieur ï¿½ j=" << j << endl;
+    } else {
+        // Now we have to swap elements i and j in the list of stations
+        list<Station*>::iterator it_i = circuit_mutated->stations->begin();
+        list<Station*>::iterator it_j = circuit_mutated->stations->begin();
+        std::advance(it_i, i);
+        std::advance(it_j, j);
 
-    Station* tmp = *it_i;
-    *it_i = *it_j;
-    *it_j = tmp;
+        Station* tmp = *it_i;
+        *it_i = *it_j;
+        *it_j = tmp;
     }
-   	circuit_mutated->update();     
+   	circuit_mutated->update();
     return circuit_mutated;
-    
-    
 }
 
 Circuit* Circuit::mutate_2opt_best() {
      Circuit* best_circuit = new Circuit(this);
      int score = best_circuit->get_cost();
      int curr_score;
-    
+
      for (int i=0; i<this->stations->size()-1; i++) {
          for (int j=i+1; j<this->stations->size(); j++) {
-           Circuit* curr_circuit = this->mutate_2opt(i,j);
-           //curr_circuit->partial_clear();
-           //curr_circuit->optimal_initial_load();
-           //curr_circuit->length = inst->get_dist(curr_circuit->stations, curr_circuit->remorque);
-           //curr_circuit->equilibrate();
-           curr_score = curr_circuit->get_cost();
-           if (curr_score < score) {
-               score = curr_score;
-               best_circuit = curr_circuit;
-                   }
+            Circuit* curr_circuit = this->mutate_2opt(i,j);
+            //curr_circuit->partial_clear();
+            //curr_circuit->optimal_initial_load();
+            //curr_circuit->length = inst->get_dist(curr_circuit->stations, curr_circuit->remorque);
+            //curr_circuit->equilibrate();
+            curr_score = curr_circuit->get_cost();
+            if (curr_score < score) {
+                score = curr_score;
+                best_circuit = curr_circuit;
+            }
          }
      }
-     printf("New score : %i\n", score);
      return best_circuit;
  }
 
@@ -376,6 +372,7 @@ Circuit* Circuit::mutate_2opt_best() {
          new_score = new_circuit->get_cost();
      }
      printf("Called mutate_2opt_best %i times \n", count);
+     printf("New score : %i\n", new_score);
      return new_circuit;
  }
 
@@ -394,22 +391,22 @@ Circuit* Circuit::mutate_2opt_best() {
 //
 void Circuit::reverse_branch(int pos1, int pos2) {
     //
-    // 1. vérification des paramèters pos1 et pos2 (on assure pos1 < pos2)
+    // 1. vï¿½rification des paramï¿½ters pos1 et pos2 (on assure pos1 < pos2)
     //
     // ...
 
     //
-    // 2. déclaration et positionnement itérateurs associés aux positions
+    // 2. dï¿½claration et positionnement itï¿½rateurs associï¿½s aux positions
     //
     // ...
 
     //
-    // 3. inversion de la branche (avec méthode splice de la STL)
+    // 3. inversion de la branche (avec mï¿½thode splice de la STL)
     //
     // ...
 }
- 
- 
+
+
 string Circuit::to_s() {
     stringstream buf;
     buf << "# Circuit associÃ© Ã  la remorque " <<  remorque->name <<

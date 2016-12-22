@@ -30,25 +30,25 @@ Solution* Steepest2optSolver::Stupid_solver(Solution* sol) {
     }
     sol->clear();
     // Principe : On prend les stations dans l'ordre de l'instance, puis
-    // on les affecte a chaque remorque à tour de rôle.
+    // on les affecte a chaque remorque ï¿½ tour de rï¿½le.
 
     int remorque_id = -1;
     for (unsigned j = 0; j < inst->stations->size(); j++) {
-        // on extrait la prochaine station à visiter
+        // on extrait la prochaine station ï¿½ visiter
         Station* station = inst->stations->at(j);
-        // sélection des remorques à tour de rôle
+        // sï¿½lection des remorques ï¿½ tour de rï¿½le
         remorque_id = (remorque_id + 1) % inst->remorques->size();
-        // on extrait le circuit associé à la remorque sélectionnée
+        // on extrait le circuit associï¿½ ï¿½ la remorque sï¿½lectionnï¿½e
         Circuit* circuit = sol->circuits->at(remorque_id);
         // on ajoute la station en fin de ce circuit
         logn5("StupidSolver::solve: ajout de la station " + station->name +
-              " à la remorque " + circuit->remorque->name);
+              " ï¿½ la remorque " + circuit->remorque->name);
         circuit->stations->push_back(station);
         // update inutile ici car n'a pas (encore) besoin de mesurer la
-        // stupidité de cette insertion !
+        // stupiditï¿½ de cette insertion !
     }
 
-    logn4("StupidSolver::solve: avant appel à sol->update");
+    logn4("StupidSolver::solve: avant appel ï¿½ sol->update");
     sol->update();
     logn3("StupidSolver::solve: END");
     return sol;
@@ -56,20 +56,20 @@ Solution* Steepest2optSolver::Stupid_solver(Solution* sol) {
 
 
 // Construction solution initiale par glouton aleatoire :----------------------------------------------------------------------------
-// On reprend la fonction apply_one_greedy du CarloSolver 
+// On reprend la fonction apply_one_greedy du CarloSolver
 
-// Construire la solution en paramètre par un glouton.
+// Construire la solution en paramï¿½tre par un glouton.
 // Principe : On prend les stations dans l'ordre de l'instance, puis
-// on les affecte à chaque remorque.
-// - la remorque est sélectionnée selon l'option remorque_chooser
-// - la station est tirée au hazard selon l'option station_chooser
+// on les affecte ï¿½ chaque remorque.
+// - la remorque est sï¿½lectionnï¿½e selon l'option remorque_chooser
+// - la station est tirï¿½e au hazard selon l'option station_chooser
 // - le mode d'insertion d'une station dans le circuit courant de la
-//   remorque est sélectionné selon l'option station_inserter
+//   remorque est sï¿½lectionnï¿½ selon l'option station_inserter
 //
-// La solution passée en paramètre est vidée puis recontruite mais
-// l'objet reste le même : il est simplement modifié.
-// L'objet Solution passé en paramètre est donc entièrement gérée par la
-// méthode appelante (construction puis destruction).
+// La solution passï¿½e en paramï¿½tre est vidï¿½e puis recontruite mais
+// l'objet reste le mï¿½me : il est simplement modifiï¿½.
+// L'objet Solution passï¿½ en paramï¿½tre est donc entiï¿½rement gï¿½rï¿½e par la
+// mï¿½thode appelante (construction puis destruction).
 //
 
 Solution* Steepest2optSolver::glouton_aleatoire(Solution* sol) {
@@ -78,11 +78,11 @@ Solution* Steepest2optSolver::glouton_aleatoire(Solution* sol) {
 
     auto stations = new vector<Station*>(*inst->stations);
     if (Options::args->station_chooser == "RAND") {
-        // On mélange le vector par la lib standard c++
+        // On mï¿½lange le vector par la lib standard c++
         random_shuffle(stations->begin(), stations->end());
     };
 
-    int remorque_id = -1; // sélection des remorques à tour de rôle
+    int remorque_id = -1; // sï¿½lection des remorques ï¿½ tour de rï¿½le
     for (unsigned j = 0; j < stations->size(); j++) {
         Station* station = stations->at(j);
 
@@ -101,7 +101,7 @@ Solution* Steepest2optSolver::glouton_aleatoire(Solution* sol) {
         // }
         circuit->insert_from_option(station);
     }
-    logn5("Steepest2optSolver::apply_one_greedy: avant appel à sol->update");
+    logn5("Steepest2optSolver::apply_one_greedy: avant appel ï¿½ sol->update");
     sol->update();
 
     logn4("Steepest2optSolver::apply_one_greedy END");
@@ -110,12 +110,11 @@ Solution* Steepest2optSolver::glouton_aleatoire(Solution* sol) {
 
 
 // 2)Methode stupid de ce solver :----------------------------------------------------------------------------
-// "Effectue une seule descente à partir de la solution (deterministe) issue du glouton StupidSolver"
+// "Effectue une seule descente ï¿½ partir de la solution (deterministe) issue du glouton StupidSolver"
 bool Steepest2optSolver::solve_stupid() {
-
     this->cursol = new Solution(inst);
     this->cursol = Stupid_solver(this->cursol);
-    mutate(this->cursol); 
+    mutate(this->cursol);
     this->bestsol->copy(this->cursol);
     this->found = true;
     return found;
@@ -127,7 +126,6 @@ bool Steepest2optSolver::solve_stupid() {
 // 3)Methode principale de ce solver :----------------------------------------------------------------------------
 // S'enchaine un nombre parametrable de fois : on utilise la classe Option !
 bool Steepest2optSolver::solve() {
-
     Options* args = Options::args;
     int itermax = args->itermax;
     this->bestsol->copy(this->testsol);
@@ -138,8 +136,9 @@ bool Steepest2optSolver::solve() {
         this->cursol = glouton_aleatoire(this->cursol);
         mutate(this->cursol);
 
-        if(this->cursol->get_cost() < this->bestsol->get_cost()){
+        if(this->cursol->get_cost() < this->bestsol->get_cost()) {
             this->bestsol->copy(this->cursol);
+            this->bestsol->update();
         }
     }
     this->found = true;
@@ -151,15 +150,9 @@ bool Steepest2optSolver::solve() {
 void Steepest2optSolver::mutate(Solution* sol) {
     logn4("Steepest2optSolver::mutate BEGIN");
 
-    Circuit* circuit;
-	
     for(int i=0;i<sol->circuits->size();i++){
-        circuit=sol->circuits->at(i);
-        cout << "Circuit avant la descente" << endl;
-        cout << circuit->to_s() << endl;
-        circuit = circuit->mutate_2opt_steepest(10000000);
-        cout << "Circuit apres la descente" << endl;
-        cout << circuit->to_s() << endl;       
+        printf("-- Circuit numÃ©ro %i\n", i);
+        sol->circuits->at(i) = sol->circuits->at(i)->mutate_2opt_steepest(100000);
     }
 
     sol->update();
