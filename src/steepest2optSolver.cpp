@@ -115,7 +115,9 @@ bool Steepest2optSolver::solve_stupid() {
     this->cursol = new Solution(inst);
     this->cursol = Stupid_solver(this->cursol);
     mutate(this->cursol);
-    this->bestsol->copy(this->cursol);
+    if(this->cursol->get_cost() < this->bestsol->get_cost()) {
+      this->bestsol->copy(this->cursol);
+    }
     this->found = true;
     return found;
 };

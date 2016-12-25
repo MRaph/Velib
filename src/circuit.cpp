@@ -322,15 +322,17 @@ Circuit* Circuit::mutate_2opt(int i, int j) {
     if (i>=j){
         cout << "Erreur de mutate_2opt : i=" << i << " sup�rieur � j=" << j << endl;
     } else {
+      for(int k = 0; k < 0.5*(j-i); k++) {
         // Now we have to swap elements i and j in the list of stations
         list<Station*>::iterator it_i = circuit_mutated->stations->begin();
         list<Station*>::iterator it_j = circuit_mutated->stations->begin();
-        std::advance(it_i, i);
-        std::advance(it_j, j);
-
+        std::advance(it_i, i+k);
+        std::advance(it_j, j-k);
         Station* tmp = *it_i;
         *it_i = *it_j;
         *it_j = tmp;
+
+      }
     }
    	circuit_mutated->update();
     return circuit_mutated;
@@ -370,10 +372,11 @@ Circuit* Circuit::mutate_2opt_best() {
          new_circuit = old_circuit->mutate_2opt_best();
          old_score = new_score;
          new_score = new_circuit->get_cost();
+         // printf("iteration %i New score : %i, Old score : %i\n", count, new_score, old_score);
      }
      printf("Called mutate_2opt_best %i times \n", count);
-     printf("New score : %i\n", new_score);
-     return new_circuit;
+     printf("New score : %i\n", old_score);
+     return old_circuit;
  }
 
 // inversion d'un chemin dans le circuit (2opt)
