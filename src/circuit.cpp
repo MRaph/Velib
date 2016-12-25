@@ -102,7 +102,9 @@ int Circuit::optimal_initial_load() {
     int deficit, lackOfSpace, lackOfBikes;
     for (auto it = this->stations->begin(); it != this->stations->end(); ++it) {
         Station* station = *it;
-        logn6(station->to_s_long());
+        if (log6()) {
+            logn6(station->to_s_long());
+        }
         deficit = station->deficit();
         if (deficit < 0) {
             // On retire des vélos de la station
@@ -146,7 +148,9 @@ void Circuit::equilibrate_dummy() {}
 
 // Méthode d'équilibrage d'un circuit
 void Circuit::equilibrate_circuit() {
-    logn6("Circuit::equilibrate BEGIN");
+    if (log6()) {
+        logn6("Circuit::equilibrate BEGIN");
+    }
     int desequilibre_station, newdesequilibre_station = 0, capacity_remorque_left;
     int initial_load = this->optimal_initial_load();
     this->charge_init = initial_load;
@@ -158,8 +162,10 @@ void Circuit::equilibrate_circuit() {
         desequilibre_station = station->deficit();
         capacity_remorque_left = capacity_remorque-this->current_load;
 
-        logn7(station->to_s_long());
-        logn7("Circuit::equilibrate: avant maj depots");
+        if (log7()) {
+            logn7(station->to_s_long());
+            logn7("Circuit::equilibrate: avant maj depots");
+        }
 
         if (desequilibre_station > 0) {
             //On prend des vélos de la remorque pour les mettre dans la station
@@ -213,12 +219,15 @@ void Circuit::equilibrate_circuit() {
             newdesequilibre_station = 0;
         }
 
-        logn7("Circuit::equilibrate: avant maj desequilibre");
+        if (log7()) {
+            logn7("Circuit::equilibrate: avant maj desequilibre");
+        }
         // On ajoute le desequilibre de la station au desequilibre du circuit
         this->desequilibre += abs(newdesequilibre_station);
     }
-
-    logn6("Circuit::equilibrate END");
+    if (log6()) {
+        logn6("Circuit::equilibrate END");
+    }
 }
 
 //Method to equilibrate the deliveries on a circuit
@@ -237,7 +246,9 @@ void Circuit::equilibrate() {
 // L'appel à update est à la charge de l'appelant
 //
 void Circuit::insert(Station* station, int pos) {
-    logn5("Circuit::insert BEGIN " + station->name + " pos=" + U::to_s(pos));
+    if (log5()) {
+        logn5("Circuit::insert BEGIN " + station->name + " pos=" + U::to_s(pos));
+    }
     if (pos == -1) {
         this->stations->push_back(station);
     } else if (pos == 0) {
@@ -258,7 +269,9 @@ void Circuit::insert(Station* station, int pos) {
         // on procède à l'insertion
         this->stations->insert(it, station);
     }
-    logn5("Circuit::insert END");
+    if (log5()) {
+        logn5("Circuit::insert END");
+    }
 }
 // Insertion d'une station dans un circuit à une position est aléatoire.
 //
@@ -269,14 +282,18 @@ void Circuit::insert_rand(Station* station) {
     if (this->stations->size() != 0) {
         pos = rand() % this->stations->size()+1;
     }
-    logn5("Circuit::insert_rand BEGIN " + this->remorque->name + ": " + station->name + " pos=" + U::to_s(pos));
+    if (log5()) {
+        logn5("Circuit::insert_rand BEGIN " + this->remorque->name + ": " + station->name + " pos=" + U::to_s(pos));
+    }
     auto it = this->stations->begin();
     // on avance l'itérateur jusqu'à la position pos
     std::advance(it, pos);
 
     // on procède à l'insertion
     this->stations->insert(it, station);
-    logn5("Circuit::insert_rand END");
+    if (log5()) {
+        logn5("Circuit::insert_rand END");
+    }
 }
 
 
@@ -302,7 +319,9 @@ void Circuit::insert_from_option(Station* s) {
 // entre 0 et stations->size()-1
 //
 Station* Circuit::erase(int pos) {
-    logn5("Circuit::erase BEGIN pos=" + U::to_s(pos));
+    if (log5()) {
+        logn5("Circuit::erase BEGIN pos=" + U::to_s(pos));
+    }
     if (pos < 0 || pos > this->stations->size()-1 ) {
         cout << "Circuit::erase ERREUR pos=" << pos << " hors borne" << endl;
         exit(1);
@@ -312,7 +331,9 @@ Station* Circuit::erase(int pos) {
     std::advance(it, pos);
     Station* station = *it;
     this->stations->erase(it);
-    logn5("Circuit::erase END");
+    if (log5()) {
+        logn5("Circuit::erase END");
+    }
     return station;
 }
 
@@ -322,17 +343,16 @@ Circuit* Circuit::mutate_2opt(int i, int j) {
     if (i>=j){
         cout << "Erreur de mutate_2opt : i=" << i << " sup�rieur � j=" << j << endl;
     } else {
-      for(int k = 0; k < 0.5*(j-i); k++) {
-        // Now we have to swap elements i and j in the list of stations
-        list<Station*>::iterator it_i = circuit_mutated->stations->begin();
-        list<Station*>::iterator it_j = circuit_mutated->stations->begin();
-        std::advance(it_i, i+k);
-        std::advance(it_j, j-k);
-        Station* tmp = *it_i;
-        *it_i = *it_j;
-        *it_j = tmp;
-
-      }
+        for(int k = 0; k < 0.5*(j-i); k++) {
+            // Now we have to swap elements i and j in the list of stations
+            list<Station*>::iterator it_i = circuit_mutated->stations->begin();
+            list<Station*>::iterator it_j = circuit_mutated->stations->begin();
+            std::advance(it_i, i+k);
+            std::advance(it_j, j-k);
+            Station* tmp = *it_i;
+            *it_i = *it_j;
+            *it_j = tmp;
+        }
     }
    	circuit_mutated->update();
     return circuit_mutated;
@@ -372,10 +392,11 @@ Circuit* Circuit::mutate_2opt_best() {
          new_circuit = old_circuit->mutate_2opt_best();
          old_score = new_score;
          new_score = new_circuit->get_cost();
-         // printf("iteration %i New score : %i, Old score : %i\n", count, new_score, old_score);
      }
-     printf("Called mutate_2opt_best %i times \n", count);
-     printf("New score : %i\n", old_score);
+     if (log4()) {
+         logn4("Called mutate_2opt_best " + to_string(count) + " times \n");
+         logn4("New score : " + to_string(old_score) +"\n");
+     }
      return old_circuit;
  }
 

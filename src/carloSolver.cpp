@@ -2,12 +2,14 @@
 
 CarloSolver::CarloSolver(Instance* inst) : Solver::Solver(inst) {
     name = "CarloSolver";
-    desc = "Résolution par algorithme de Monte-Carlo\n"
-            ;
-    logn1(name + ": " + desc + " inst: " + inst->name);
+    desc = "Résolution par algorithme de Monte-Carlo\n";
+    if (log1()) {
+        logn1(name + ": " + desc + " inst: " + inst->name);
+    }
     this->solution = new Solution(inst);
-
-    logn1("Apres  CarloSolver::CarloSolver pour instance " + inst->name);
+    if (log1()) {
+        logn1("Apres  CarloSolver::CarloSolver pour instance " + inst->name);
+    }
 }
 CarloSolver::~CarloSolver()  {
     // delete this->solution;
@@ -66,7 +68,7 @@ bool CarloSolver::solve() {
         }
     }
     if (log1()) { cout << endl << flush; } // on ne veut pas voir le prefix "L1:"
-    logn2("CarloSolver::solve: END");
+    if (log2()) { logn2("CarloSolver::solve: END"); }
     this->found = true;
     // cout << this->solution->to_s_long();
     return found;
@@ -86,7 +88,9 @@ bool CarloSolver::solve() {
 //
 Solution* CarloSolver::apply_one_greedy(Solution* sol) {
     // U::die("CarloSolver::apply_one_greedy: non implémenté !");
-    logn4("CarloSolver::apply_one_greedy BEGIN");
+    if (log4()) {
+        logn4("CarloSolver::apply_one_greedy BEGIN");
+    }
     sol->clear();
 
     auto stations = new vector<Station*>(*inst->stations);
@@ -109,15 +113,15 @@ Solution* CarloSolver::apply_one_greedy(Solution* sol) {
         }
         Circuit* circuit = sol->circuits->at(remorque_id);
 
-        // if (circuit->remorque->name == "r2" && station->name == "s8") {
-        //     Log::level += 7;
-        // }
         circuit->insert_from_option(station);
     }
-    logn5("CarloSolver::apply_one_greedy: avant appel à sol->update");
+    if (log5()) {
+        logn5("CarloSolver::apply_one_greedy: avant appel à sol->update");
+    }
     sol->update();
-
-    logn4("CarloSolver::apply_one_greedy END");
+    if (log4()) {
+        logn4("CarloSolver::apply_one_greedy END");
+    }
     return sol;
 };
 

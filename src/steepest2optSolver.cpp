@@ -2,21 +2,19 @@
 
 Steepest2optSolver::Steepest2optSolver(Instance* inst) : Solver::Solver(inst) {
     name = "Steepest2optSolver";
-    desc = "Résolution par acceptation systématique d'un voisinage\n"
-            ;
-    logn1(name + ": " + desc + " inst: " + inst->name);
-    // this->solution = new Solution(inst);
-    // logn1("Apres  Steepest2optSolver::Steepest2optSolver pour instance " + inst->name);
+    desc = "Résolution par acceptation systématique d'un voisinage\n";
+    if (log1()) {
+        logn1(name + ": " + desc + " inst: " + inst->name);
+    }
 
     this->testsol = new Solution(inst);
     testsol->solve_stupid();
     this->cursol = new Solution(this->testsol);
     this->bestsol = new Solution(this->testsol);
-
-
-    //exit(1);
 }
+
 Steepest2optSolver::~Steepest2optSolver()  {
+
 }
 
 
@@ -41,16 +39,21 @@ Solution* Steepest2optSolver::Stupid_solver(Solution* sol) {
         // on extrait le circuit associ� � la remorque s�lectionn�e
         Circuit* circuit = sol->circuits->at(remorque_id);
         // on ajoute la station en fin de ce circuit
-        logn5("StupidSolver::solve: ajout de la station " + station->name +
-              " � la remorque " + circuit->remorque->name);
+        if (log5()) {
+            logn5("StupidSolver::solve: ajout de la station " + station->name +
+            " à la remorque " + circuit->remorque->name);
+        }
         circuit->stations->push_back(station);
         // update inutile ici car n'a pas (encore) besoin de mesurer la
         // stupidit� de cette insertion !
     }
-
-    logn4("StupidSolver::solve: avant appel � sol->update");
+    if (log4()) {
+        logn4("StupidSolver::solve: avant appel � sol->update");
+    }
     sol->update();
-    logn3("StupidSolver::solve: END");
+    if (log3()) {
+        logn3("StupidSolver::solve: END");
+    }
     return sol;
 };
 
@@ -73,7 +76,9 @@ Solution* Steepest2optSolver::Stupid_solver(Solution* sol) {
 //
 
 Solution* Steepest2optSolver::glouton_aleatoire(Solution* sol) {
-    logn4("Steepest2optSolver::apply_one_greedy BEGIN");
+    if (log4()) {
+        logn4("Steepest2optSolver::apply_one_greedy BEGIN");
+    }
     sol->clear();
 
     auto stations = new vector<Station*>(*inst->stations);
@@ -101,10 +106,13 @@ Solution* Steepest2optSolver::glouton_aleatoire(Solution* sol) {
         // }
         circuit->insert_from_option(station);
     }
-    logn5("Steepest2optSolver::apply_one_greedy: avant appel � sol->update");
+    if (log5()) {
+        logn5("Steepest2optSolver::apply_one_greedy: avant appel � sol->update");
+    }
     sol->update();
-
-    logn4("Steepest2optSolver::apply_one_greedy END");
+    if (log4()) {
+        logn4("Steepest2optSolver::apply_one_greedy END");
+    }
     return sol;
 };
 
