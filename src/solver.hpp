@@ -88,6 +88,9 @@ public:
     DescentSolver(Instance* Instance);
     virtual ~DescentSolver();
     virtual bool solve();
+    virtual bool solve_explore_everything();
+    virtual bool solve_pure_descent();
+    virtual bool solve_recuit_simule();
     virtual void mutate(Solution* sol);
 
     virtual Solution* get_solution() {return this->bestsol;};
@@ -107,7 +110,7 @@ public:
     virtual bool solve();
     Solution* Stupid_solver(Solution* sol);
     Solution* glouton_aleatoire(Solution* sol);
-    virtual void mutate(Solution* sol);    
+    virtual void mutate(Solution* sol);
 
     virtual Solution* get_solution() {return this->bestsol;};
 };
@@ -210,4 +213,3 @@ public:
 };
 
 #endif
-
