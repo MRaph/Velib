@@ -118,7 +118,7 @@ Solution* Steepest2optSolver::glouton_aleatoire(Solution* sol) {
 
 
 // 2)Methode stupid de ce solver :----------------------------------------------------------------------------
-// "Effectue une seule descente � partir de la solution (deterministe) issue du glouton StupidSolver"
+// "Effectue une seule descente à partir de la solution (deterministe) issue du glouton StupidSolver"
 bool Steepest2optSolver::solve_stupid() {
     this->cursol = new Solution(inst);
     this->cursol = Stupid_solver(this->cursol);
