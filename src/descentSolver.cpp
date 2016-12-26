@@ -34,7 +34,7 @@ DescentSolver::~DescentSolver()  {
 // car la température du système est updaté suivant : T(n+1) = temperature_update * T(n)
 bool DescentSolver::solve() {
     if (log4()) {
-        logn4("Start solve DescentSolver");
+        logn4("DescentSolver::solve BEGIN");
     }
     // ...
     // On pourra exploiter ici l'option booléenne Options::args->explore pour
@@ -74,44 +74,68 @@ bool DescentSolver::solve_recuit_simule() {
     int temperature_current = temperature_init;
     float criteria_stop = 0.00001*temperature_init;
 
+    Solution* solution_current;
+
     int nb_iterations_ameliorations;
     int diff;
     double r;
     while (temperature_current > criteria_stop) {
         nb_iterations_ameliorations = 0;
         while (nb_iterations_ameliorations < nb_iterations_temperature) {
-            mutate(this->cursol);
-            diff = this->cursol->get_cost() - this->bestsol->get_cost();
+            // On obtient une solution dans un voisinage de la solution actuelle
+            solution_current = new Solution(this->cursol);
+            mutate(solution_current);
+            // On calcule la différence de cout entre les deux solutions
+            diff = solution_current->get_cost() - this->bestsol->get_cost();
+            // Cas où la solution trouvée est meilleure
             if (diff < 0) {
-                // Copy this->cursol into this->bestsol
                 if (log7()) {
                     logn7("New solution with lower cost has been found");
                 }
+                // Mise à jour de la valeur de la solution optimale
+                this->bestsol->copy(solution_current);
+                this->cursol->copy(solution_current);
+            // Cas où la solution trouvée est moins bonne
             } else {
-                // Take a random number between 0 and 1
+                // On prend un nombre aléatoire entre 0 et 1
                 r = ((double) rand() / (RAND_MAX));
-                // Compare it with exp(-diff/temperature_init)
+                // On le compare à exp(-diff/T0)
                 if (r < exp(-diff/temperature_init)) {
-                    // Copy this->cursol into this->bestsol
+                    // Cas où la solution moins bonne est tout de même retenue
                     if (log7()) {
                         logn7("New solution with higher cost has been found.");
                     }
+                    this->cursol->copy(solution_current);
                 }
             }
             nb_iterations_ameliorations += 1;
         }
         temperature_current = temperature_current*temperature_update;
     }
-
     return true;
 }
-// Effectue une mutation sur la solution en paramètre.
-//
+
+// Effectue une mutation sur la solution en paramètre et renvoie un voisin.
 void DescentSolver::mutate(Solution* sol) {
+    // Deux possibilités pour trouver un voisin :
+    // - changer la position de deux stations au sein d'un meme circuit
+    // - retirer une station d'un circuit pour l'ajouter à un autre
+    // Le choix de l'un ou l'autre est fait avec une probabilité 50-50
     if (log4()) {
         logn4("DescentSolver::mutate BEGIN");
     }
-    // RIEN POUR L'INSTANT !
+    double r = ((double) rand() / (RAND_MAX));
+    bool mutation_inside_circuit = (r - 1/2 > 0);
+    if (mutation_inside_circuit == true) {
+        // On choisit un circuit et on applique la même mutation que le Steepest2optSolver
+
+    } else {
+        // On choisit deux circuits et on ajoute une station du premier dans le deuxieme
+        // à un emplacement aléatoire.
+    }
+
+
+
     if (log4()) {
         logn4("DescentSolver::mutate END");
     }
