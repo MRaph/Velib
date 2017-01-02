@@ -57,11 +57,37 @@ bool DescentSolver::solve() {
     return found;
 }
 
+// On accepte systématique chaque voisin 
 bool DescentSolver::solve_explore_everything() {
+    Options* args = Options::args;
+    int nb_iter = args->itermax;
+	solution_current = new Solution(this->cursol)
+
+    for(int i=1; i<nb_iter; i++){
+        mutate(solution_current); 
+        diff = solution_current->get_cost() - this->bestsol->get_cost();
+        if(diff <0) {
+            this->bestsol->copy(solution_current);
+        }
+    }		
     return true;
 }
 
+// On accepte que les voisins améliorants
 bool DescentSolver::solve_pure_descent() {
+    Options* args = Options::args;
+    int nb_iter = args->itermax;
+	solution_current = new Solution(this->cursol)
+
+    for(int i=1; i<nb_iter; i++){
+        mutate(solution_current); 
+        diff = solution_current->get_cost() - this->bestsol->get_cost();
+        if(diff <0) {
+            this->bestsol->copy(solution_current);
+		else{
+			// On recommence avec la meilleure sol
+            solution_current->copy(this->bestsol);
+        }						
     return true;
 }
 
