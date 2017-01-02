@@ -144,7 +144,7 @@ bool DescentSolver::solve_recuit_simule() {
 // Effectue une mutation sur la solution en paramètre et renvoie un voisin.
 void DescentSolver::mutate(Solution* sol) {
     // Deux possibilités pour trouver un voisin :
-    // - changer la position de deux stations au sein d'un meme circuit
+    // - changer la position de deux stations au sein d'un meme circuit (2opt)
     // - retirer une station d'un circuit pour l'ajouter à un autre
     // Le choix de l'un ou l'autre est fait avec une probabilité 50-50
     if (log4()) {
@@ -190,6 +190,11 @@ void DescentSolver::mutate(Solution* sol) {
         }
     } else {
         // Circuits chosen are the same, we have to mutate two stations in the same circuit
+        if(circuit_1->stations->size()>=2){
+            int k = rand() % (circuit_1->stations->size()-1);
+            int l = (rand() % (circuit_1->stations->size()-k-1)) + 2 + k;
+            circuit->mutate_2opt(k,l);
+		}
     }
 
 
