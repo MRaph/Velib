@@ -70,9 +70,9 @@ bool DescentSolver::solve_pure_descent() {
 bool DescentSolver::solve_recuit_simule() {
     int temperature_init = 1000000;
     float temperature_update = 0.95;
-    int nb_iterations_temperature = 1;
+    int nb_iterations_temperature = 30;
     int temperature_current = temperature_init;
-    float criteria_stop = 0.00001*temperature_init;
+    float criteria_stop = 0.000001*temperature_init;
 
     Solution* solution_current;
 
@@ -124,16 +124,47 @@ void DescentSolver::mutate(Solution* sol) {
     if (log4()) {
         logn4("DescentSolver::mutate BEGIN");
     }
-    double r = ((double) rand() / (RAND_MAX));
-    bool mutation_inside_circuit = (r - 1/2 > 0);
-    if (mutation_inside_circuit == true) {
-        // On choisit un circuit et on applique la même mutation que le Steepest2optSolver
+    bool are_different_circuits;
+    int circuit_1_int, circuit_2_int, length_circuit_1, length_circuit_2, nb_circuits, single_position;
+    // Station* ith_station, jth_station;
 
+    // On choisit au hasard deux circuits
+    nb_circuits = sol->circuits->size();
+    circuit_1_int = rand() % nb_circuits;
+    circuit_2_int = rand() % nb_circuits;
+    // On teste si la mutation est interne à un circuit ou entre deux circuits
+    are_different_circuits = (circuit_1_int == circuit_2_int);
+    // On choisit deux stations dans chaque circuit
+    Circuit* circuit_1 = sol->circuits->at(circuit_1_int);
+    Circuit* circuit_2 = sol->circuits->at(circuit_2_int);
+    length_circuit_1 = circuit_1->stations->size();
+    length_circuit_2 = circuit_2->stations->size();
+    if (are_different_circuits) {
+        if (length_circuit_1 < 2 && length_circuit_2 < 2) {
+            // Switch remorque between the two circuits
+            // Even if it seems useless, remorque capacity can modify the score
+            Circuit* tmp = circuit_1;
+            sol->circuits->at(circuit_1_int) = circuit_2;
+            sol->circuits->at(circuit_2_int) = tmp;
+            return;
+        } else if (length_circuit_1 == 1 && length_circuit_2 > 0) {
+            // Remove circuit 1 and add station of the circuit to the other circuit
+            single_position = rand() % length_circuit_2+1; // +1 pour insérer à la fin du circuit
+            list<Station*>::iterator it_circuit = circuit_1->stations->begin();
+            Station* station = *it_circuit;
+            circuit_2->insert(station, single_position);
+            return;
+        } else if (length_circuit_2 == 1 && length_circuit_1 > 0) {
+            // Remove circuit 2 and add station of the circuit to the other circuit
+            single_position = rand() % length_circuit_1+1; // +1 pour insérer à la fin du circuit
+            list<Station*>::iterator it_circuit = circuit_2->stations->begin();
+            Station* station = *it_circuit;
+            circuit_1->insert(station, single_position);
+            return;
+        }
     } else {
-        // On choisit deux circuits et on ajoute une station du premier dans le deuxieme
-        // à un emplacement aléatoire.
+        // Circuits chosen are the same, we have to mutate two stations in the same circuit
     }
-
 
 
     if (log4()) {
