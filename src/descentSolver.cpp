@@ -57,7 +57,7 @@ bool DescentSolver::solve() {
     return found;
 }
 
-// On accepte systématique chaque voisin
+// On accepte systématiquement chaque voisin
 bool DescentSolver::solve_explore_everything() {
     Options* args = Options::args;
     int nb_iter = args->itermax, i, diff;
@@ -66,7 +66,7 @@ bool DescentSolver::solve_explore_everything() {
     for (i=0; i<nb_iter; i++) {
         mutate(solution_current);
         diff = solution_current->get_cost() - this->bestsol->get_cost();
-        if(diff <0) {
+        if (diff < 0) {
             this->bestsol->copy(solution_current);
         }
     }
@@ -83,6 +83,7 @@ bool DescentSolver::solve_pure_descent() {
         mutate(solution_current);
         diff = solution_current->get_cost() - this->bestsol->get_cost();
         if(diff < 0) {
+            // On met à jour la meilleure solution
             this->bestsol->copy(solution_current);
 		} else {
 			// On recommence avec la meilleure sol
@@ -153,7 +154,7 @@ void DescentSolver::mutate(Solution* sol) {
     }
     bool are_different_circuits;
     int circuit_1_int, circuit_2_int, length_circuit_1, length_circuit_2, nb_circuits, single_position;
-    // Station* ith_station, jth_station;
+    int remove_position, add_position;
 
     // On choisit au hasard deux circuits
     nb_circuits = sol->circuits->size();
@@ -170,23 +171,29 @@ void DescentSolver::mutate(Solution* sol) {
         if (length_circuit_1 < 2 && length_circuit_2 < 2) {
             // Switch remorque between the two circuits
             // Even if it seems useless, remorque capacity can modify the score
-            Circuit* tmp = circuit_1;
-            sol->circuits->at(circuit_1_int) = circuit_2;
-            sol->circuits->at(circuit_2_int) = tmp;
+            Station* station_circuit_1 = circuit_1->erase(0);
+            Station* station_circuit_2 = circuit_2->erase(0);
+            circuit_1->insert(station_circuit_2, 0);
+            circuit_2->insert(station_circuit_1, 0);
             return;
         } else if (length_circuit_1 == 1 && length_circuit_2 > 0) {
             // Remove circuit 1 and add station of the circuit to the other circuit
             single_position = rand() % length_circuit_2+1; // +1 pour insérer à la fin du circuit
-            list<Station*>::iterator it_circuit = circuit_1->stations->begin();
-            Station* station = *it_circuit;
-            circuit_2->insert(station, single_position);
+            Station* station_to_move = circuit_1->erase(0);
+            circuit_2->insert(station_to_move, single_position);
             return;
         } else if (length_circuit_2 == 1 && length_circuit_1 > 0) {
             // Remove circuit 2 and add station of the circuit to the other circuit
             single_position = rand() % length_circuit_1+1; // +1 pour insérer à la fin du circuit
-            list<Station*>::iterator it_circuit = circuit_2->stations->begin();
-            Station* station = *it_circuit;
-            circuit_1->insert(station, single_position);
+            Station* station_to_move = circuit_2->erase(0);
+            circuit_1->insert(station_to_move, single_position);
+            return;
+        } else {
+            // We remove a station from circuit 1 and add it to circuit 2
+            remove_position = rand() % length_circuit_1;
+            add_position = rand() % length_circuit_2+1; // +1 because you can add at the end
+            Station* station_to_move = circuit_1->erase(remove_position);
+            circuit_2->insert(station_to_move, add_position);
             return;
         }
     } else {
@@ -194,7 +201,7 @@ void DescentSolver::mutate(Solution* sol) {
         if(circuit_1->stations->size()>=2){
             int k = rand() % (circuit_1->stations->size()-1);
             int l = (rand() % (circuit_1->stations->size()-k-1)) + 2 + k;
-            circuit_1->mutate_2opt(k,l);
+            circuit_1->mutate_2opt(min(k,l), max(k,l));
 		}
     }
 
