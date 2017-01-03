@@ -13,7 +13,7 @@ DescentSolver::DescentSolver(Instance* inst) : Solver::Solver(inst) {
     this->cursol = new Solution(this->testsol);
     this->bestsol = new Solution(this->testsol);
 
-    cerr << "DescentSolver non implémenté" << endl;
+    solve();
     if (log1()) {
         logn1(name + ": " + desc + " inst: " + inst->name);
     }
@@ -43,7 +43,7 @@ bool DescentSolver::solve() {
     } else if (Options::args->explore == "strict"){
         this->found = solve_pure_descent();
     } else {
-        printf("Argument explore has to be set to recuit, all or strict");
+        printf("Argument explore has to be set to recuit, all or strict\n");
     }
 
     if (log4()) {
@@ -111,13 +111,13 @@ bool DescentSolver::solve_recuit_simule() {
     Options* args = Options::args;
     double temperature_init = args->temp_init;
     double temperature_update = 0.99;
-    int nb_iterations_temperature = 30;
+    int nb_iterations_temperature = args->itermax;
     double temperature_current = temperature_init;
     double criteria_stop = 0.000001*temperature_init;
 
     Solution* solution_current;
 
-    int nb_iterations_ameliorations;
+    int nb_iterations_ameliorations=0;
     int diff;
     double r;
     while (temperature_current > criteria_stop) {
@@ -125,6 +125,7 @@ bool DescentSolver::solve_recuit_simule() {
         if (log4()) {
             logn4("Temperature actuelle " + std::to_string(temperature_current));
         }
+        printf("Temperature actuelle : %f\n", temperature_current);
         while (nb_iterations_ameliorations < nb_iterations_temperature) {
             // On obtient une solution dans un voisinage de la solution actuelle
             solution_current = new Solution(this->cursol);
@@ -138,7 +139,9 @@ bool DescentSolver::solve_recuit_simule() {
                 }
                 // Mise à jour de la valeur de la solution optimale
                 this->bestsol->copy(solution_current);
+                this->bestsol->update();
                 this->cursol->copy(solution_current);
+                this->cursol->update();
             // Cas où la solution trouvée est moins bonne
             } else {
                 // On prend un nombre aléatoire entre 0 et 1
@@ -150,12 +153,15 @@ bool DescentSolver::solve_recuit_simule() {
                         logn7("New solution with higher cost has been found.");
                     }
                     this->cursol->copy(solution_current);
+                    this->cursol->update();
                 }
             }
             nb_iterations_ameliorations += 1;
         }
         temperature_current = temperature_current*temperature_update;
     }
+    printf("Final score : %d\n", this->bestsol->get_cost());
+
     if (log4()) {
         logn4("DescentSolver::solve_pure_descent END");
     }
@@ -171,6 +177,7 @@ void DescentSolver::mutate(Solution* sol) {
     if (log4()) {
         logn4("DescentSolver::mutate BEGIN");
     }
+
     bool are_different_circuits;
     int circuit_1_int, circuit_2_int, length_circuit_1, length_circuit_2, nb_circuits, single_position;
     int remove_position, add_position;
@@ -217,10 +224,10 @@ void DescentSolver::mutate(Solution* sol) {
         }
     } else {
         // Circuits chosen are the same, we have to mutate two stations in the same circuit
-        if(circuit_1->stations->size()>=2){
+        if (circuit_1->stations->size()>=2) {
             int k = rand() % (circuit_1->stations->size()-1);
-            int l = (rand() % (circuit_1->stations->size()-k-1)) + 2 + k;
-            if (k!=l) {
+            int l = rand() % (circuit_1->stations->size()-1);
+            if (k != l) {
                 circuit_1->mutate_2opt(min(k,l), max(k,l));
             } else {
                 l = k+1;
@@ -228,7 +235,6 @@ void DescentSolver::mutate(Solution* sol) {
             }
 		}
     }
-
 
     if (log4()) {
         logn4("DescentSolver::mutate END");
