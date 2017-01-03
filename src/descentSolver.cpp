@@ -36,18 +36,14 @@ bool DescentSolver::solve() {
     if (log4()) {
         logn4("DescentSolver::solve BEGIN");
     }
-    // ...
-    // On pourra exploiter ici l'option booléenne Options::args->explore pour
-    // choisir entre :
-    // - une descente pure (on n'accepte que les voisins améliorants).
-    // - une exploration (acceptation systématique de tout voisin)
-    // ...
-    if (Options::args->explore == false) {
+    if (Options::args->explore == "recuit") {
         this->found = solve_recuit_simule();
-    } else if (Options::args->explore == true) {
+    } else if (Options::args->explore == "all") {
         this->found = solve_explore_everything();
-    } else {
+    } else if (Options::args->explore == "strict"){
         this->found = solve_pure_descent();
+    } else {
+        printf("Argument explore has to be set to recuit, all or strict");
     }
 
     if (log4()) {
@@ -59,6 +55,9 @@ bool DescentSolver::solve() {
 
 // On accepte systématiquement chaque voisin
 bool DescentSolver::solve_explore_everything() {
+    if (log4()) {
+        logn4("DescentSolver::solve_explore_everything BEGIN");
+    }
     Options* args = Options::args;
     int nb_iter = args->itermax, i, diff;
 	Solution* solution_current = new Solution(this->cursol);
@@ -70,11 +69,18 @@ bool DescentSolver::solve_explore_everything() {
             this->bestsol->copy(solution_current);
         }
     }
+
+    if (log4()) {
+        logn4("DescentSolver::solve_explore_everything END");
+    }
     return true;
 }
 
 // On accepte que les voisins améliorants
 bool DescentSolver::solve_pure_descent() {
+    if (log4()) {
+        logn4("DescentSolver::solve_pure_descent BEGIN");
+    }
     Options* args = Options::args;
     int nb_iter = args->itermax, i, diff;
 	Solution* solution_current = new Solution(this->cursol);
@@ -90,17 +96,24 @@ bool DescentSolver::solve_pure_descent() {
             solution_current->copy(this->bestsol);
         }
     }
+    if (log4()) {
+        logn4("DescentSolver::solve_pure_descent END");
+    }
     return true;
 }
 
 // Algorithme du recuit simulé pour une temperature initiale
 // non-nulle et non-infinie
 bool DescentSolver::solve_recuit_simule() {
-    int temperature_init = 1000000;
-    float temperature_update = 0.95;
+    if (log4()) {
+        logn4("DescentSolver::solve_recuit_simule BEGIN");
+    }
+    Options* args = Options::args;
+    double temperature_init = args->temp_init;
+    double temperature_update = 0.99;
     int nb_iterations_temperature = 30;
-    int temperature_current = temperature_init;
-    float criteria_stop = 0.000001*temperature_init;
+    double temperature_current = temperature_init;
+    double criteria_stop = 0.000001*temperature_init;
 
     Solution* solution_current;
 
@@ -109,6 +122,9 @@ bool DescentSolver::solve_recuit_simule() {
     double r;
     while (temperature_current > criteria_stop) {
         nb_iterations_ameliorations = 0;
+        if (log4()) {
+            logn4("Temperature actuelle " + std::to_string(temperature_current));
+        }
         while (nb_iterations_ameliorations < nb_iterations_temperature) {
             // On obtient une solution dans un voisinage de la solution actuelle
             solution_current = new Solution(this->cursol);
@@ -139,6 +155,9 @@ bool DescentSolver::solve_recuit_simule() {
             nb_iterations_ameliorations += 1;
         }
         temperature_current = temperature_current*temperature_update;
+    }
+    if (log4()) {
+        logn4("DescentSolver::solve_pure_descent END");
     }
     return true;
 }
@@ -201,7 +220,12 @@ void DescentSolver::mutate(Solution* sol) {
         if(circuit_1->stations->size()>=2){
             int k = rand() % (circuit_1->stations->size()-1);
             int l = (rand() % (circuit_1->stations->size()-k-1)) + 2 + k;
-            circuit_1->mutate_2opt(min(k,l), max(k,l));
+            if (k!=l) {
+                circuit_1->mutate_2opt(min(k,l), max(k,l));
+            } else {
+                l = k+1;
+                circuit_1->mutate_2opt(k, l);
+            }
 		}
     }
 

@@ -16,12 +16,13 @@ class Options  {
 
     string action;
     int itermax;
+    double temp_init;
 
     string station_inserter;
     string station_chooser;
     string remorque_chooser;
 
-    bool explore;
+    string explore;
 
     // long seed;
     int seed;
@@ -281,6 +282,11 @@ class Options  {
               ->set_desc("Nombre maxi d'itérations (ou autre selon le solveur).")
               ->add_alias("-N");
 
+        this->temp_init = 2000.0;
+        parser->add_double_option("--temperature", this->temp_init)
+              ->set_desc("Temperature initiale pour le recuit simulé")
+              ->add_alias("-T");
+
         //--------------
         parser->add_doc("\nOptions liées aux actions glouton ou carlo\n");
 
@@ -305,8 +311,8 @@ class Options  {
         parser->add_doc("\nOptions liées à l'action descent\n");
 
         //--------------
-        this->explore = false;
-        parser->add_switch_option("--explore", this->explore)
+        this->explore = "";
+        parser->add_string_option("--explore", this->explore)
               ->set_desc("mode exploration : acceptation systématique du voisin.\n")
               ->add_alias("-E");
 
@@ -350,4 +356,3 @@ class Options  {
 //    Options* Options::args = NULL;
 
 #endif
-
