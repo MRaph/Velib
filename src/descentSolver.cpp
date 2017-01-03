@@ -125,7 +125,6 @@ bool DescentSolver::solve_recuit_simule() {
         if (log4()) {
             logn4("Temperature actuelle " + std::to_string(temperature_current));
         }
-        printf("Temperature actuelle : %f\n", temperature_current);
         while (nb_iterations_ameliorations < nb_iterations_temperature) {
             // On obtient une solution dans un voisinage de la solution actuelle
             solution_current = new Solution(this->cursol);
