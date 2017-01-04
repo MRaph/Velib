@@ -59,7 +59,7 @@ bool AnnealingSolver::solve() {
     // We iterate over the temperature, which are updated as 0.99*previous_temperature
     while (temperature_current > criteria_stop) {
         if ((count % 15 == 0) && log2()) {
-            logn2("Temperature actuelle : " + std::to_string(temperature_current));
+            logn2("Temperature actuelle : " + std::to_string(temperature_current) + " - score - " + std::to_string(this->bestsol->get_cost()));
         }
         nb_iterations_ameliorations = 0;
         // We apply N random searches at each step of temperature
