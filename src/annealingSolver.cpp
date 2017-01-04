@@ -68,15 +68,13 @@ bool AnnealingSolver::solve() {
             mutate(solution_current);
             // We compuet the difference of score
             diff = solution_current->get_cost() - this->bestsol->get_cost();
-            if (diff < 0) {
+            if (diff <= 0) {
                 // It improves, we remember the mutation as the new best solution
-                if (log7()) {
-                    logn7("New solution with lower cost has been found");
+                if (log2()) {
+                    logn2("New solution with lower cost has been found : " + std::to_string(solution_current->get_cost()));
                 }
                 this->bestsol->copy(solution_current);
-                this->bestsol->update();
                 this->cursol->copy(solution_current);
-                this->cursol->update();
             } else {
                 // It doesn't improve, we remember the solution if rand() < exp(-diff/T_init)
                 // We pick a random number between 0 and 1
@@ -84,11 +82,10 @@ bool AnnealingSolver::solve() {
                 // We compare it to exp(-diff/T0)
                 if (r < exp(-diff/temperature_init)) {
                     // We remember the mutation as the current solution
-                    if (log7()) {
-                        logn7("New solution with higher cost has been found.");
+                    if (log3()) {
+                        logn3("New solution with higher cost has been found : " + std::to_string(solution_current->get_cost()) + "/" + std::to_string(this->bestsol->get_cost()));
                     }
                     this->cursol->copy(solution_current);
-                    this->cursol->update();
                 }
             }
             nb_iterations_ameliorations += 1;
@@ -96,8 +93,8 @@ bool AnnealingSolver::solve() {
         // We update the temperature of the system.
         temperature_current = temperature_current*temperature_update;
     }
-    if (log5()) {
-        logn5("Final score : %d\n" +  std::to_string(this->bestsol->get_cost()));
+    if (log2()) {
+        logn2("Final score : " +  std::to_string(this->bestsol->get_cost()));
     }
     if (log4()) {
         logn4("DescentSolver::solve_pure_descent END");
@@ -117,8 +114,11 @@ void AnnealingSolver::mutate(Solution* sol) {
     }
 
     bool are_different_circuits;
-    int circuit_1_int, circuit_2_int, length_circuit_1, length_circuit_2, nb_circuits, single_position;
+    int circuit_1_int, circuit_2_int, length_circuit_1, length_circuit_2, nb_circuits;
     int remove_position, add_position;
+    Station* station_circuit_2;
+    Station* station_circuit_1;
+    Station* station_to_move;
 
     // We pick two random circuits
     nb_circuits = sol->circuits->size();
@@ -131,51 +131,72 @@ void AnnealingSolver::mutate(Solution* sol) {
     Circuit* circuit_2 = sol->circuits->at(circuit_2_int);
     length_circuit_1 = circuit_1->stations->size();
     length_circuit_2 = circuit_2->stations->size();
-    if (are_different_circuits) {
-        if (length_circuit_1 < 2 && length_circuit_2 < 2) {
-            // Switch remorque between the two circuits
-            // Even if it seems useless, remorque capacity can modify the score
-            Station* station_circuit_1 = circuit_1->erase(0);
-            Station* station_circuit_2 = circuit_2->erase(0);
-            circuit_1->insert(station_circuit_2, 0);
-            circuit_2->insert(station_circuit_1, 0);
-            return;
-        } else if (length_circuit_1 == 1 && length_circuit_2 > 0) {
-            // Remove circuit 1 and add station of the circuit to the other circuit
-            single_position = rand() % length_circuit_2+1; // +1 to insert at the end
-            Station* station_to_move = circuit_1->erase(0);
-            circuit_2->insert(station_to_move, single_position);
-            return;
-        } else if (length_circuit_2 == 1 && length_circuit_1 > 0) {
-            // Remove circuit 2 and add station of the circuit to the other circuit
-            single_position = rand() % length_circuit_1+1; // +1 to insert at the end
-            Station* station_to_move = circuit_2->erase(0);
-            circuit_1->insert(station_to_move, single_position);
-            return;
-        } else {
+    bool is_circuit_1_empty = (length_circuit_1 == 0);
+    bool is_circuit_2_empty = (length_circuit_2 == 0);
+
+    if (is_circuit_2_empty && is_circuit_1_empty) {
+        if (log3()) {
+            logn3("AnnealingSolver::mutate - Both circuits are empty.");
+        }
+        // Do nothing
+        return;
+    } else if (is_circuit_1_empty && !is_circuit_2_empty) {
+        if (log3()) {
+            logn3("AnnealingSolver::mutate - Circuit 1 is empty.");
+        }
+        // Move station of circuit 2 to 1
+        remove_position = rand() % length_circuit_2;
+        station_circuit_2 = circuit_2->erase(remove_position);
+        circuit_1->insert(station_circuit_2, 0);
+        return;
+    } else if (!is_circuit_1_empty && is_circuit_2_empty) {
+        if (log3()) {
+            logn3("AnnealingSolver::mutate - Circuit 2 is empty.");
+        }
+        // Move station of circuit 1 to 2
+        remove_position = rand() % length_circuit_1;
+        station_circuit_1 = circuit_1->erase(remove_position);
+        circuit_2->insert(station_circuit_1, 0);
+        return;
+    } else {
+        // Both circuits aren't empty
+        if (are_different_circuits) {
+            // Circuits are different and non-empty
+            if (log3()) {
+                logn3("AnnealingSolver::mutate - Switching stations");
+            }
             // We remove a station from circuit 1 and add it to circuit 2
             remove_position = rand() % length_circuit_1;
             add_position = rand() % length_circuit_2+1; // +1 to insert at the end
-            Station* station_to_move = circuit_1->erase(remove_position);
+            station_to_move = circuit_1->erase(remove_position);
             circuit_2->insert(station_to_move, add_position);
             return;
-        }
-    } else {
-        // Circuits chosen are the same, we have to mutate two stations in the same circuit
-        if (circuit_1->stations->size()>=2) {
-            int k = rand() % (circuit_1->stations->size()-1);
-            int l = rand() % (circuit_1->stations->size()-1);
-            if (k != l) {
-                // mutate_2opt implies that first argument is lower than second one.
-                circuit_1->mutate_2opt(min(k,l), max(k,l));
+        } else {
+            // Same circuit, non-empty
+            if (circuit_1->stations->size()>1) {
+                if (log3()) {
+                    logn3("AnnealingSolver::mutate - Intern mutation accepted.");
+                }
+                // Pick two random positions
+                int k = rand() % (circuit_1->stations->size()-1);
+                int l = rand() % (circuit_1->stations->size()-1);
+                if (k != l) {
+                    // mutate_2opt implies that first argument is lower than second one.
+                    circuit_1->mutate_2opt(min(k,l), max(k,l));
+                } else {
+                    // if k is the last position, we switch the last two stations.
+                    l = k+1;
+                    circuit_1->mutate_2opt(k, l);
+                }
             } else {
-                // if k is the last position, we switch the last two stations.
-                l = k+1;
-                circuit_1->mutate_2opt(k, l);
+                if (log3()) {
+                    logn3("AnnealingSolver::mutate - Intern mutation refused : Circuit is too short.");
+                }
             }
-		}
+        }
     }
 
+    sol->update();
     if (log4()) {
         logn4("DescentSolver::mutate END");
     }
