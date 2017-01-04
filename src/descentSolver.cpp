@@ -19,7 +19,17 @@ DescentSolver::DescentSolver(Instance* inst) : Solver::Solver(inst) {
     }
     exit(1);
 }
+
 DescentSolver::~DescentSolver()  {
+    if (this->testsol) {
+        delete this->testsol;
+    }
+    if (this->bestsol) {
+        delete this->bestsol;
+    }
+    if (this->cursol) {
+        delete this->cursol;
+    }
 }
 
 // Méthode principale de ce solver, principe :
@@ -36,14 +46,12 @@ bool DescentSolver::solve() {
     if (log4()) {
         logn4("DescentSolver::solve BEGIN");
     }
-    if (Options::args->explore == "recuit") {
-        this->found = solve_recuit_simule();
-    } else if (Options::args->explore == "all") {
+    if (Options::args->explore == "all") {
         this->found = solve_explore_everything();
     } else if (Options::args->explore == "strict"){
         this->found = solve_pure_descent();
     } else {
-        printf("Argument explore has to be set to recuit, all or strict\n");
+        printf("Argument --explore has to be set to all or strict\n");
     }
 
     if (log4()) {
@@ -96,71 +104,6 @@ bool DescentSolver::solve_pure_descent() {
             solution_current->copy(this->bestsol);
         }
     }
-    if (log4()) {
-        logn4("DescentSolver::solve_pure_descent END");
-    }
-    return true;
-}
-
-// Algorithme du recuit simulé pour une temperature initiale
-// non-nulle et non-infinie
-bool DescentSolver::solve_recuit_simule() {
-    if (log4()) {
-        logn4("DescentSolver::solve_recuit_simule BEGIN");
-    }
-    Options* args = Options::args;
-    double temperature_init = args->temp_init;
-    double temperature_update = 0.99;
-    int nb_iterations_temperature = args->itermax;
-    double temperature_current = temperature_init;
-    double criteria_stop = 0.000001*temperature_init;
-
-    Solution* solution_current;
-
-    int nb_iterations_ameliorations=0;
-    int diff;
-    double r;
-    while (temperature_current > criteria_stop) {
-        nb_iterations_ameliorations = 0;
-        if (log4()) {
-            logn4("Temperature actuelle " + std::to_string(temperature_current));
-        }
-        while (nb_iterations_ameliorations < nb_iterations_temperature) {
-            // On obtient une solution dans un voisinage de la solution actuelle
-            solution_current = new Solution(this->cursol);
-            mutate(solution_current);
-            // On calcule la différence de cout entre les deux solutions
-            diff = solution_current->get_cost() - this->bestsol->get_cost();
-            // Cas où la solution trouvée est meilleure
-            if (diff < 0) {
-                if (log7()) {
-                    logn7("New solution with lower cost has been found");
-                }
-                // Mise à jour de la valeur de la solution optimale
-                this->bestsol->copy(solution_current);
-                this->bestsol->update();
-                this->cursol->copy(solution_current);
-                this->cursol->update();
-            // Cas où la solution trouvée est moins bonne
-            } else {
-                // On prend un nombre aléatoire entre 0 et 1
-                r = ((double) rand() / (RAND_MAX));
-                // On le compare à exp(-diff/T0)
-                if (r < exp(-diff/temperature_init)) {
-                    // Cas où la solution moins bonne est tout de même retenue
-                    if (log7()) {
-                        logn7("New solution with higher cost has been found.");
-                    }
-                    this->cursol->copy(solution_current);
-                    this->cursol->update();
-                }
-            }
-            nb_iterations_ameliorations += 1;
-        }
-        temperature_current = temperature_current*temperature_update;
-    }
-    printf("Final score : %d\n", this->bestsol->get_cost());
-
     if (log4()) {
         logn4("DescentSolver::solve_pure_descent END");
     }

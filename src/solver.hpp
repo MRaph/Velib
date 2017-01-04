@@ -90,7 +90,6 @@ public:
     virtual bool solve();
     virtual bool solve_explore_everything();
     virtual bool solve_pure_descent();
-    virtual bool solve_recuit_simule();
     virtual void mutate(Solution* sol);
 
     virtual Solution* get_solution() {return this->bestsol;};
