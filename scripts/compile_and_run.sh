@@ -1,3 +1,4 @@
+cd ..
 cd build/
 echo "make"
 make

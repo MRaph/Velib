@@ -1,3 +1,4 @@
+cd ..
 echo "Removing build directory"
 rm -r build/
 echo "Creating new build directory"
