@@ -67,7 +67,7 @@ bool AnnealingSolver::solve() {
             solution_current = new Solution(this->cursol);
             mutate(solution_current);
             // We compuet the difference of score
-            diff = solution_current->get_cost() - this->bestsol->get_cost();
+            diff = solution_current->get_cost() - this->cursol->get_cost();
             if (diff <= 0) {
                 // It improves, we remember the mutation as the new best solution
                 if (log3()) {
