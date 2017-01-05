@@ -140,7 +140,7 @@ int Circuit::optimal_initial_load() {
             }
         }
     }
-    return kmin;
+    return kinf;
 }
 
 // Méthode d'équilibrage d'un circuit
