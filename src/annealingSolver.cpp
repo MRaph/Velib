@@ -73,14 +73,16 @@ bool AnnealingSolver::solve() {
                 if (log3()) {
                     logn3("New solution with lower cost has been found : " + std::to_string(solution_current->get_cost()));
                 }
-                this->bestsol->copy(solution_current);
+                if (solution_current->get_cost() < this->bestsol->get_cost()) {
+                    this->bestsol->copy(solution_current);
+                }
                 this->cursol->copy(solution_current);
             } else {
                 // It doesn't improve, we remember the solution if rand() < exp(-diff/T_init)
                 // We pick a random number between 0 and 1
                 r = ((double) rand() / (RAND_MAX));
                 // We compare it to exp(-diff/T0)
-                if (r < exp(-diff/temperature_init)) {
+                if (r < exp(-diff/temperature_current)) {
                     // We remember the mutation as the current solution
                     if (log3()) {
                         logn3("New solution with higher cost has been found : " + std::to_string(solution_current->get_cost()) + "/" + std::to_string(this->bestsol->get_cost()));
