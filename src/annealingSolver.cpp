@@ -47,19 +47,18 @@ bool AnnealingSolver::solve() {
     double temperature_update = 0.99;
     int nb_iterations_temperature = args->itermax;
     double temperature_current = temperature_init;
-    double criteria_stop = 1.0;
+    double criteria_stop = 1;
 
     Solution* solution_current;
 
     int nb_iterations_ameliorations=0;
     int diff;
     double r;
-    int count = 0;
 
     // We iterate over the temperature, which are updated as 0.99*previous_temperature
     while (temperature_current > criteria_stop) {
-        if ((count % 15 == 0) && log2()) {
-            logn2("Temperature actuelle : " + std::to_string(temperature_current) + " - score - " + std::to_string(this->bestsol->get_cost()));
+        if (log2()) {
+            printf("%f \t %d \t %d\n", temperature_current, this->cursol->get_cost(), this->bestsol->get_cost());
         }
         nb_iterations_ameliorations = 0;
         // We apply N random searches at each step of temperature
@@ -71,8 +70,8 @@ bool AnnealingSolver::solve() {
             diff = solution_current->get_cost() - this->bestsol->get_cost();
             if (diff <= 0) {
                 // It improves, we remember the mutation as the new best solution
-                if (log2()) {
-                    logn2("New solution with lower cost has been found : " + std::to_string(solution_current->get_cost()));
+                if (log3()) {
+                    logn3("New solution with lower cost has been found : " + std::to_string(solution_current->get_cost()));
                 }
                 this->bestsol->copy(solution_current);
                 this->cursol->copy(solution_current);
