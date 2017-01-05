@@ -100,6 +100,8 @@ bool AnnealingSolver::solve() {
     if (log4()) {
         logn4("DescentSolver::solve_pure_descent END");
     }
+
+    Solution::save(this->bestsol, args);
     return true;
 }
 
