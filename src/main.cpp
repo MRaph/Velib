@@ -5,6 +5,7 @@
 
 #include "options.hpp"
 #include "test.hpp"
+#include <time.h>
 
 // je dois définir cette variable statique en dehors de la classe Options
 Options* Options::args = NULL;
@@ -97,27 +98,6 @@ void annealing_solver_action(Options* args) {
     Instance* inst = new Instance(args->filename, args);
     AnnealingSolver* solver = new AnnealingSolver(inst);
 
-    // Largeur du palier à température constante
-    // step_size = 10;
-
-    // // température initiale (-1 pour automatique)
-    // temp_init = -1.0;
-
-    // // taux d'acceptation cible pour un calcul auto de temp_init
-    // temp_init_rate = 0.8;
-
-    // // tempétature minimale (critère d'arêt)
-    // temp_mini = 1.0e-6;
-
-    // // coeff de décroissance géométrique
-    // temp_coef = 0.999950;
-
-    // // nb maxi de refus consécutif de mouvement (améliorant ou pas)
-    // nb_cons_reject_max = 1e9; // infini
-
-    // // nb maxi de tests consécutifs non améliorants
-    // nb_cons_no_improv_max = 1000;
-
     solver->solve();
     if (solver->found) {
         Solution::save(solver->get_solution(), args);
@@ -144,35 +124,20 @@ void taboo_solver_action(Options* args) {
     logn1("taboo_solver_action END");
 }
 
-// void test_action(Options* args) {
-//     Instance* inst = new Instance(args->filename, args);
-// }
-
-// TODO : Remplacer classe Solver par un interface purement abstraite
-//        et réorganiser ce fichier
-//
 int main(int argc, char *argv[]) {
-
-    // Analyse et extraction des arguments de la ligne de commande
-    // La variable statique Options::args sera disponible dans toutes les classes
-    // Options* args = new Options(argc, argv);
-    // Options::args = args;
     Options::args = new Options(argc, argv);
-    Options* args =  Options::args; // une variable locale
+    Options* args =  Options::args;
 
     // Exemple d'affichage de quelques options
     cout << "args->action=" << args->action << endl;
     cout << "args->seed=" << args->seed << endl;
     cout << "args->filename=" << args->filename << endl;
     cout << "args->outfilename=" << args->outfilename << endl;
-    // exit(0);
 
     // Démarrage d'un chronomètre
-    time_t start_time;
-    time(&start_time);
+    clock_t time_start, time_stop;
+    time_start = clock();
 
-    // Dans la suite, le comportement de la résolution dépend du choix du
-    // solveur passé en paramètre.
     if (args->action == "test") {;
         test_action(args);
     } else if (args->action == "instance") {
@@ -191,15 +156,13 @@ int main(int argc, char *argv[]) {
         taboo_solver_action(args);
     } else {
         cerr << "Action non reconnue : " << args->action << "\n";
-        exit(1);
     }
 
     // Arrêt et exploitation du chronomètre
-    time_t end_time;
-    time(&end_time);
-    double diff = difftime(end_time, start_time);
-    printf("Temps de calcul:\t %.1fs\n", diff);
-    // cout << "Temps de calcul:\t" << diff << "s" << endl << endl;
+    time_stop = clock();
+    float diff = ((float)time_stop - (float)time_start);
+    float seconds = diff/CLOCKS_PER_SEC;
+    printf("Time of execution: %f\n", seconds);
 
     delete args;
     return 0;

@@ -17,7 +17,6 @@ AnnealingSolver::AnnealingSolver(Instance* inst) : Solver::Solver(inst) {
     if (log1()) {
         logn1(name + ": " + desc + " inst: " + inst->name);
     }
-    exit(1);
 }
 
 // Destructeur
