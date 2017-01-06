@@ -44,11 +44,17 @@ bool DescentSolver::solve() {
     if (Options::args->explore == "all") {
         // In this case, accepts systematically the neighbour
         this->found = solve_explore_everything();
+        if (log1()) {
+            logn1("Explore everything");
+        }
     } else if (Options::args->explore == "strict"){
         // In this case, accepts the neighbour if it improves the score
         this->found = solve_pure_descent();
+        if (log1()) {
+            logn1("Explore everything");
+        }
     } else {
-        printf("Argument --explore has to be set to all or strict\n");
+        cerr << "Argument --explore has to be set to all or strict" << endl;
     }
 
     if (log4()) {
@@ -104,6 +110,7 @@ bool DescentSolver::solve_pure_descent() {
 		} else {
 			// It doesn't improve, we come back to the best solution remembered.
             solution_current->copy(this->bestsol);
+            solution_current->update();
         }
     }
     if (log4()) {
@@ -112,19 +119,21 @@ bool DescentSolver::solve_pure_descent() {
     return true;
 }
 
-// Effectue une mutation sur la solution en paramètre et renvoie un voisin.
 void DescentSolver::mutate(Solution* sol) {
     // Deux possibilités pour trouver un voisin :
     // - changer la position de deux stations au sein d'un meme circuit (2opt)
     // - retirer une station d'un circuit pour l'ajouter à un autre
     // Le choix de l'un ou l'autre est fait avec une probabilité 50-50
     if (log4()) {
-        logn4("DescentSolver::mutate BEGIN");
+        logn4("AnnealingSolver::mutate BEGIN");
     }
 
     bool are_different_circuits;
-    int circuit_1_int, circuit_2_int, length_circuit_1, length_circuit_2, nb_circuits, single_position;
+    int circuit_1_int, circuit_2_int, length_circuit_1, length_circuit_2, nb_circuits;
     int remove_position, add_position;
+    Station* station_circuit_2;
+    Station* station_circuit_1;
+    Station* station_to_move;
 
     // We pick two random circuits
     nb_circuits = sol->circuits->size();
@@ -137,54 +146,74 @@ void DescentSolver::mutate(Solution* sol) {
     Circuit* circuit_2 = sol->circuits->at(circuit_2_int);
     length_circuit_1 = circuit_1->stations->size();
     length_circuit_2 = circuit_2->stations->size();
-    if (are_different_circuits) {
-        if (length_circuit_1 < 2 && length_circuit_2 < 2) {
-            // Switch remorque between the two circuits
-            // Even if it seems useless, remorque capacity can modify the score
-            Station* station_circuit_1 = circuit_1->erase(0);
-            Station* station_circuit_2 = circuit_2->erase(0);
-            circuit_1->insert(station_circuit_2, 0);
-            circuit_2->insert(station_circuit_1, 0);
-            return;
-        } else if (length_circuit_1 == 1 && length_circuit_2 > 0) {
-            // Remove circuit 1 and add station of the circuit to the other circuit
-            single_position = rand() % length_circuit_2+1; // +1 to insert at the end
-            Station* station_to_move = circuit_1->erase(0);
-            circuit_2->insert(station_to_move, single_position);
-            return;
-        } else if (length_circuit_2 == 1 && length_circuit_1 > 0) {
-            // Remove circuit 2 and add station of the circuit to the other circuit
-            single_position = rand() % length_circuit_1+1; // +1 to insert at the end
-            Station* station_to_move = circuit_2->erase(0);
-            circuit_1->insert(station_to_move, single_position);
-            return;
-        } else {
+    bool is_circuit_1_empty = (length_circuit_1 == 0);
+    bool is_circuit_2_empty = (length_circuit_2 == 0);
+
+    if (is_circuit_2_empty && is_circuit_1_empty) {
+        if (log3()) {
+            logn3("AnnealingSolver::mutate - Both circuits are empty.");
+        }
+        // Do nothing
+        return;
+    } else if (is_circuit_1_empty && !is_circuit_2_empty) {
+        if (log3()) {
+            logn3("AnnealingSolver::mutate - Circuit 1 is empty.");
+        }
+        // Move station of circuit 2 to 1
+        remove_position = rand() % length_circuit_2;
+        station_circuit_2 = circuit_2->erase(remove_position);
+        circuit_1->insert(station_circuit_2, 0);
+        return;
+    } else if (!is_circuit_1_empty && is_circuit_2_empty) {
+        if (log3()) {
+            logn3("AnnealingSolver::mutate - Circuit 2 is empty.");
+        }
+        // Move station of circuit 1 to 2
+        remove_position = rand() % length_circuit_1;
+        station_circuit_1 = circuit_1->erase(remove_position);
+        circuit_2->insert(station_circuit_1, 0);
+        return;
+    } else {
+        // Both circuits aren't empty
+        if (are_different_circuits) {
+            // Circuits are different and non-empty
+            if (log3()) {
+                logn3("AnnealingSolver::mutate - Switching stations");
+            }
             // We remove a station from circuit 1 and add it to circuit 2
             remove_position = rand() % length_circuit_1;
             add_position = rand() % length_circuit_2+1; // +1 to insert at the end
-            Station* station_to_move = circuit_1->erase(remove_position);
+            station_to_move = circuit_1->erase(remove_position);
             circuit_2->insert(station_to_move, add_position);
             return;
-        }
-    } else {
-        // Circuits chosen are the same, we have to mutate two stations in the same circuit
-        if (circuit_1->stations->size()>=2) {
-            int k = rand() % (circuit_1->stations->size()-1);
-            int l = rand() % (circuit_1->stations->size()-1);
-            if (k != l) {
-                // mutate_2opt implies that first argument is lower than second one.
-                circuit_1->mutate_2opt(min(k,l), max(k,l));
+        } else {
+            // Same circuit, non-empty
+            if (circuit_1->stations->size()>1) {
+                if (log3()) {
+                    logn3("AnnealingSolver::mutate - Intern mutation accepted.");
+                }
+                // Pick two random positions
+                int k = rand() % (circuit_1->stations->size()-1);
+                int l = rand() % (circuit_1->stations->size()-1);
+                if (k != l) {
+                    // mutate_2opt implies that first argument is lower than second one.
+                    circuit_1->mutate_2opt(min(k,l), max(k,l));
+                } else {
+                    // if k is the last position, we switch the last two stations.
+                    l = k+1;
+                    circuit_1->mutate_2opt(k, l);
+                }
             } else {
-                // if k is the last position, we switch the last two stations.
-                l = k+1;
-                circuit_1->mutate_2opt(k, l);
+                if (log3()) {
+                    logn3("AnnealingSolver::mutate - Intern mutation refused : Circuit is too short.");
+                }
             }
-		}
+        }
     }
 
+    sol->update();
     if (log4()) {
-        logn4("DescentSolver::mutate END");
+        logn4("AnnealingSolver::mutate END");
     }
 };
-
 //./

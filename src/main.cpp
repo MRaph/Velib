@@ -97,8 +97,6 @@ void annealing_solver_action(Options* args) {
     logn1("annealing_solver_action END");
     Instance* inst = new Instance(args->filename, args);
     AnnealingSolver* solver = new AnnealingSolver(inst);
-
-    solver->solve();
     if (solver->found) {
         Solution::save(solver->get_solution(), args);
     } else {

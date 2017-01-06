@@ -13,10 +13,11 @@ AnnealingSolver::AnnealingSolver(Instance* inst) : Solver::Solver(inst) {
     this->cursol = new Solution(this->testsol);
     this->bestsol = new Solution(this->testsol);
     // We apply the recuit simule algorithm
-    solve();
     if (log1()) {
         logn1(name + ": " + desc + " inst: " + inst->name);
     }
+    solve();
+    return;
 }
 
 // Destructeur
@@ -64,7 +65,7 @@ bool AnnealingSolver::solve() {
         while (nb_iterations_ameliorations < nb_iterations_temperature) {
             // We look for a neighbour of the current solution
             solution_current = new Solution(this->cursol);
-            mutate_based_on_desequilibre(solution_current);
+            mutate(solution_current);
             // We compuet the difference of score
             diff = solution_current->get_cost() - this->cursol->get_cost();
             if (diff <= 0) {
