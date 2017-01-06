@@ -49,24 +49,30 @@ void Solution::solve_stupid() {
     this->clear();
     // prochaine station de l'instance à visiter
     int sid = 0;
+    Circuit* circuit;
     // nombre approximatif de station par remorque
     int st_by_rem = round(inst->stations->size()/inst->remorques->size());
     for (unsigned i = 0; i < inst->remorques->size() - 1; i++) {
         // on rempli tous les circuits sauf le dernier
-        Circuit* circuit = this->circuits->at(i);
+        circuit = this->circuits->at(i);
         int last_sid = sid + st_by_rem;
         while (sid < last_sid) {
             circuit->stations->push_back(inst->stations->at(sid));
             sid++;
         }
     }
+    printf("hello again\n");
     // les stations restantes sont visitées par la dernière remorque
     Circuit* last_circuit = this->circuits->back();
     while (sid < inst->stations->size()) {
         last_circuit->stations->push_back(inst->stations->at(sid));
         sid++;
     }
+    printf("End solve_stupid\n");
+    printf("circuit\n");
+    printf("alst_circuit\n");
     this->update();
+    printf("delete update\n");
 }
 
 void Solution::copy(const Solution* other) {

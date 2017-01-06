@@ -49,7 +49,8 @@ public:
     // virtual State solve();
 
     virtual Solution* get_solution()  {return solution ; };
-
+    virtual void mutate_2opt(Circuit* circuit, int i, int j);
+    virtual void mutate_2opt_best(Circuit* circuit);
 };
 
 ////////////////////////////////////////////////////////////////////////
@@ -130,7 +131,7 @@ public:
     void mutate_based_on_desequilibre(Solution* sol);
     std::vector<float> convert_desequilibre_to_probability_vector(Solution* sol);
     int select_circuit_according_to_probabilities(vector<float> probabilities);
-    
+
     // void update_temp();
     // double guess_temp_init(Solution* sol,
     //                        double taux_cible=0.8,

@@ -70,19 +70,10 @@ void Circuit::clear() {
 void Circuit::update() {
     this->partial_clear();
     this->optimal_initial_load();
+
     // Mise à jour distance parcourue totale et déséquilibre global
     this->length = inst->get_dist(this->stations, this->remorque);
     this->equilibrate();
-    //printf("Score avant mutation ----------------: %i\n", this->get_cost());
-    //cout << this->to_s() << endl;
-    //Circuit* circuit_mutated = this->mutate_2opt_steepest(10);
-    //circuit_mutated->partial_clear();
-    //circuit_mutated->optimal_initial_load();
-    // // Mise à jour distance parcourue totale et déséquilibre global
-    //circuit_mutated->length = inst->get_dist(circuit_mutated->stations, circuit_mutated->remorque);
-    //circuit_mutated->equilibrate();
-    //printf("Score apr�s mutation-------------- : %i\n", circuit_mutated->get_cost());
-    //cout << circuit_mutated->to_s() << endl;
 }
 
 

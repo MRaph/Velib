@@ -185,12 +185,11 @@ void AnnealingSolver::mutate(Solution* sol) {
                 int k = rand() % (circuit_1->stations->size()-1);
                 int l = rand() % (circuit_1->stations->size()-1);
                 if (k != l) {
-                    // mutate_2opt implies that first argument is lower than second one.
-                    circuit_1->mutate_2opt(min(k,l), max(k,l));
+                    this->mutate_2opt(circuit_1, min(k,l), max(k,l));
                 } else {
                     // if k is the last position, we switch the last two stations.
                     l = k+1;
-                    circuit_1->mutate_2opt(k, l);
+                    this->mutate_2opt(circuit_1, k, l);
                 }
             } else {
                 if (log3()) {
@@ -238,7 +237,6 @@ void AnnealingSolver::mutate_based_on_desequilibre(Solution* sol) {
             logn3("AnnealingSolver::mutate - Both circuits are empty.");
         }
         // Do nothing
-        return;
     } else if (is_circuit_1_empty && !is_circuit_2_empty) {
         if (log3()) {
             logn3("AnnealingSolver::mutate - Circuit 1 is empty.");
@@ -247,7 +245,6 @@ void AnnealingSolver::mutate_based_on_desequilibre(Solution* sol) {
         remove_position = rand() % length_circuit_2;
         station_circuit_2 = circuit_2->erase(remove_position);
         circuit_1->insert(station_circuit_2, 0);
-        return;
     } else if (!is_circuit_1_empty && is_circuit_2_empty) {
         if (log3()) {
             logn3("AnnealingSolver::mutate - Circuit 2 is empty.");
@@ -256,7 +253,6 @@ void AnnealingSolver::mutate_based_on_desequilibre(Solution* sol) {
         remove_position = rand() % length_circuit_1;
         station_circuit_1 = circuit_1->erase(remove_position);
         circuit_2->insert(station_circuit_1, 0);
-        return;
     } else {
         // Both circuits aren't empty
         if (are_different_circuits) {
@@ -269,7 +265,6 @@ void AnnealingSolver::mutate_based_on_desequilibre(Solution* sol) {
             add_position = rand() % length_circuit_2+1; // +1 to insert at the end
             station_to_move = circuit_1->erase(remove_position);
             circuit_2->insert(station_to_move, add_position);
-            return;
         } else {
             // Same circuit, non-empty
             if (circuit_1->stations->size()>1) {
@@ -296,6 +291,11 @@ void AnnealingSolver::mutate_based_on_desequilibre(Solution* sol) {
     }
 
     sol->update();
+    // delete station_circuit_1;
+    // delete station_circuit_2;
+    // delete station_to_move;
+    // delete circuit_1;
+    // delete circuit_2;
     if (log4()) {
         logn4("AnnealingSolver::mutate_based_on_desequilibre END");
     }
