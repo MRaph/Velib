@@ -122,71 +122,15 @@ public:
     Solution* testsol = NULL;
     Solution* bestsol = NULL;
 
-
-    // //
-    // // Attributs d'état du solveur
-    // //
-
-    // // Température courante
-    // double temp;
-
-    // // Cumul du nombre de palliers iso température
-    // int nb_steps = 0;
-
-    // // Numéro de l'itération effectué dans le palier courant
-    // int iter_in_step = 0;
-
-    // // Cumul du nombre de mouvements testées
-    // int nb_test = 0;
-
-    // // Cumul du nombre de mouvements acceptées
-    // int nb_move = 0;
-
-    // // Cumul du nombre de mouvements refusés
-    // int nb_reject = 0;
-
-    // // Nombre de refus consécutif
-    // int nb_cons_reject = 0;
-
-    // // Nombre de tests consécutifs non améliorants.
-    // int nb_cons_no_improv = 0;
-
-    // //
-    // // Paramètres de configuration du solveur
-    // //
-
-    // // Largeur du palier à température constante
-    // int step_size = 10;
-
-    // // température initiale (-1 pour automatique)
-    // double temp_init = -1.0;
-
-    // // taux d'acceptation cible pour un calcul auto de temp_init
-    // double temp_init_rate = 0.8;
-
-    // // température minimale (critère d'arêt)
-    // double temp_mini = 1.0e-6;
-
-    // // coeff de décroissance géométrique
-    // double temp_coef = 0.9;
-
-    // // nb maxi de refus consécutif de mouvement (améliorant ou pas)
-    // int nb_cons_reject_max = 1e9; // infini
-
-    // // nb maxi de tests consécutifs non améliorants
-    // int nb_cons_no_improv_max = 1000;
-
-
-    //
-    // Constructeurs et méthodes
-    //
-
     AnnealingSolver(Instance* Instance);
     virtual ~AnnealingSolver();
     virtual bool solve();
 
     void mutate(Solution* sol);
-
+    void mutate_based_on_desequilibre(Solution* sol);
+    std::vector<float> convert_desequilibre_to_probability_vector(Solution* sol);
+    int select_circuit_according_to_probabilities(vector<float> probabilities);
+    
     // void update_temp();
     // double guess_temp_init(Solution* sol,
     //                        double taux_cible=0.8,

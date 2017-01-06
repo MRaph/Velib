@@ -64,7 +64,7 @@ bool AnnealingSolver::solve() {
         while (nb_iterations_ameliorations < nb_iterations_temperature) {
             // We look for a neighbour of the current solution
             solution_current = new Solution(this->cursol);
-            mutate(solution_current);
+            mutate_based_on_desequilibre(solution_current);
             // We compuet the difference of score
             diff = solution_current->get_cost() - this->cursol->get_cost();
             if (diff <= 0) {
@@ -113,7 +113,7 @@ void AnnealingSolver::mutate(Solution* sol) {
     // - retirer une station d'un circuit pour l'ajouter à un autre
     // Le choix de l'un ou l'autre est fait avec une probabilité 50-50
     if (log4()) {
-        logn4("DescentSolver::mutate BEGIN");
+        logn4("AnnealingSolver::mutate BEGIN");
     }
 
     bool are_different_circuits;
@@ -201,8 +201,153 @@ void AnnealingSolver::mutate(Solution* sol) {
 
     sol->update();
     if (log4()) {
-        logn4("DescentSolver::mutate END");
+        logn4("AnnealingSolver::mutate END");
     }
 };
 
-//./
+//.Effectue une mutation basée sur le désequilibre actuel de tous les circuits
+void AnnealingSolver::mutate_based_on_desequilibre(Solution* sol) {
+    if (log4()) {
+        logn4("AnnealingSolver::mutate_based_on_desequilibre BEGIN");
+    }
+
+    bool are_different_circuits;
+    int circuit_1_int, circuit_2_int, length_circuit_1, length_circuit_2, nb_circuits;
+    int remove_position, add_position;
+    Station* station_circuit_1;
+    Station* station_circuit_2;
+    Station* station_to_move;
+
+    nb_circuits = sol->circuits->size();
+    vector<float> probabilities = convert_desequilibre_to_probability_vector(sol);
+    circuit_1_int = select_circuit_according_to_probabilities(probabilities);
+    circuit_2_int = rand() % nb_circuits;
+
+    are_different_circuits = (circuit_1_int == circuit_2_int);
+    // We pick two random stations in each circuit
+    Circuit* circuit_1 = sol->circuits->at(circuit_1_int);
+    Circuit* circuit_2 = sol->circuits->at(circuit_2_int);
+    length_circuit_1 = circuit_1->stations->size();
+    length_circuit_2 = circuit_2->stations->size();
+    bool is_circuit_1_empty = (length_circuit_1 == 0);
+    bool is_circuit_2_empty = (length_circuit_2 == 0);
+
+    if (is_circuit_2_empty && is_circuit_1_empty) {
+        if (log3()) {
+            logn3("AnnealingSolver::mutate - Both circuits are empty.");
+        }
+        // Do nothing
+        return;
+    } else if (is_circuit_1_empty && !is_circuit_2_empty) {
+        if (log3()) {
+            logn3("AnnealingSolver::mutate - Circuit 1 is empty.");
+        }
+        // Move station of circuit 2 to 1
+        remove_position = rand() % length_circuit_2;
+        station_circuit_2 = circuit_2->erase(remove_position);
+        circuit_1->insert(station_circuit_2, 0);
+        return;
+    } else if (!is_circuit_1_empty && is_circuit_2_empty) {
+        if (log3()) {
+            logn3("AnnealingSolver::mutate - Circuit 2 is empty.");
+        }
+        // Move station of circuit 1 to 2
+        remove_position = rand() % length_circuit_1;
+        station_circuit_1 = circuit_1->erase(remove_position);
+        circuit_2->insert(station_circuit_1, 0);
+        return;
+    } else {
+        // Both circuits aren't empty
+        if (are_different_circuits) {
+            // Circuits are different and non-empty
+            if (log3()) {
+                logn3("AnnealingSolver::mutate - Switching stations");
+            }
+            // We remove a station from circuit 1 and add it to circuit 2
+            remove_position = rand() % length_circuit_1;
+            add_position = rand() % length_circuit_2+1; // +1 to insert at the end
+            station_to_move = circuit_1->erase(remove_position);
+            circuit_2->insert(station_to_move, add_position);
+            return;
+        } else {
+            // Same circuit, non-empty
+            if (circuit_1->stations->size()>1) {
+                if (log3()) {
+                    logn3("AnnealingSolver::mutate - Intern mutation accepted.");
+                }
+                // Pick two random positions
+                int k = rand() % (circuit_1->stations->size()-1);
+                int l = rand() % (circuit_1->stations->size()-1);
+                if (k != l) {
+                    // mutate_2opt implies that first argument is lower than second one.
+                    circuit_1->mutate_2opt(min(k,l), max(k,l));
+                } else {
+                    // if k is the last position, we switch the last two stations.
+                    l = k+1;
+                    circuit_1->mutate_2opt(k, l);
+                }
+            } else {
+                if (log3()) {
+                    logn3("AnnealingSolver::mutate - Intern mutation refused : Circuit is too short.");
+                }
+            }
+        }
+    }
+
+    sol->update();
+    if (log4()) {
+        logn4("AnnealingSolver::mutate_based_on_desequilibre END");
+    }
+
+}
+
+
+vector<float> AnnealingSolver::convert_desequilibre_to_probability_vector(Solution* sol) {
+    int nombre_circuits = sol->circuits->size();
+    std::vector<float> desequilibres(nombre_circuits);
+    std::vector<float> probabilities(nombre_circuits);
+    int i;
+    int desequilibre_max=1;
+    int desequilibre=0;
+    Circuit* circuit;
+
+    // Initializing desequilibres in a vector, finding the largest one
+    for (i = 0; i < nombre_circuits; i++) {
+        circuit = sol->circuits->at(i);
+        desequilibre = circuit->desequilibre;
+        desequilibres.at(i) = desequilibre;
+        probabilities.at(i) = desequilibre;
+        if (desequilibre > desequilibre_max) {
+            desequilibre_max = desequilibre;
+        }
+    }
+
+    // Normalizing desequilibres according to desequilibre_max
+    if (desequilibre_max > 0) {
+        for (i=0; i < nombre_circuits; i++) {
+            probabilities.at(i) /= desequilibre_max;
+        }
+    } else {
+        for (i=0; i < nombre_circuits; i++) {
+            probabilities.at(i) = 1/nombre_circuits;
+        }
+    }
+
+    return probabilities;
+}
+
+int AnnealingSolver::select_circuit_according_to_probabilities(vector<float> probabilities) {
+    int position=0;
+    int i=0;
+    int size = probabilities.size();
+    float sum = 0;
+    float random_value = ((float) rand()/(RAND_MAX));
+
+    while (sum<random_value && i<size) {
+        sum += probabilities.at(i);
+        i += 1;
+    }
+    position = i;
+
+    return position;
+}
