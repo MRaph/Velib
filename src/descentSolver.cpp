@@ -197,11 +197,11 @@ void DescentSolver::mutate(Solution* sol) {
                 int l = rand() % (circuit_1->stations->size()-1);
                 if (k != l) {
                     // mutate_2opt implies that first argument is lower than second one.
-                    circuit_1->mutate_2opt(min(k,l), max(k,l));
+                    this->mutate_2opt(circuit_1, min(k,l), max(k,l));
                 } else {
                     // if k is the last position, we switch the last two stations.
                     l = k+1;
-                    circuit_1->mutate_2opt(k, l);
+                    this->mutate_2opt(circuit_1, k, l);
                 }
             } else {
                 if (log3()) {

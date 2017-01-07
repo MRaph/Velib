@@ -345,7 +345,7 @@ Circuit* Circuit::mutate_2opt(int i, int j) {
             *it_j = tmp;
         }
     }
-   	circuit_mutated->update();
+    circuit_mutated->update();
     return circuit_mutated;
 }
 
@@ -364,10 +364,11 @@ Circuit* Circuit::mutate_2opt_best() {
             curr_score = curr_circuit->get_cost();
             if (curr_score < score) {
                 score = curr_score;
-                best_circuit = curr_circuit;
+                best_circuit->copy(curr_circuit);
             }
          }
      }
+    //  delete curr_circuit;
      return best_circuit;
  }
 

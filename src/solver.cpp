@@ -20,7 +20,6 @@ bool Solver::solve() {
 }
 
 void Solver::mutate_2opt(Circuit* circuit, int i, int j) {
-    //Station* tmp;
     if (i>=j){
         cout << "Erreur de mutate_2opt : i=" << i << " supérieur à j=" << j << endl;
     } else {
@@ -33,7 +32,8 @@ void Solver::mutate_2opt(Circuit* circuit, int i, int j) {
             reverse_list->push_front(*it);
         }
         circuit->stations->erase(it_i, it_j);
-        circuit->stations->insert(it_j, reverse_list->begin(), reverse_branch->end());
+        circuit->stations->insert(it_j, reverse_list->begin(), reverse_list->end());
+        delete reverse_list;
     }
    	circuit->update();
     return;

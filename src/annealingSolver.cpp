@@ -49,7 +49,7 @@ bool AnnealingSolver::solve() {
     double temperature_current = temperature_init;
     double criteria_stop = 1;
 
-    Solution* solution_current;
+    Solution* solution_current = new Solution(this->cursol);
 
     int nb_iterations_ameliorations=0;
     int diff;
@@ -64,7 +64,7 @@ bool AnnealingSolver::solve() {
         // We apply N random searches at each step of temperature
         while (nb_iterations_ameliorations < nb_iterations_temperature) {
             // We look for a neighbour of the current solution
-            solution_current = new Solution(this->cursol);
+            solution_current->copy(this->cursol);
             mutate(solution_current);
             // We compuet the difference of score
             diff = solution_current->get_cost() - this->cursol->get_cost();
@@ -276,11 +276,11 @@ void AnnealingSolver::mutate_based_on_desequilibre(Solution* sol) {
                 int l = rand() % (circuit_1->stations->size()-1);
                 if (k != l) {
                     // mutate_2opt implies that first argument is lower than second one.
-                    circuit_1->mutate_2opt(min(k,l), max(k,l));
+                    this->mutate_2opt(circuit_1, min(k,l), max(k,l));
                 } else {
                     // if k is the last position, we switch the last two stations.
                     l = k+1;
-                    circuit_1->mutate_2opt(k, l);
+                    this->mutate_2opt(circuit_1, k, l);
                 }
             } else {
                 if (log3()) {
@@ -291,11 +291,6 @@ void AnnealingSolver::mutate_based_on_desequilibre(Solution* sol) {
     }
 
     sol->update();
-    // delete station_circuit_1;
-    // delete station_circuit_2;
-    // delete station_to_move;
-    // delete circuit_1;
-    // delete circuit_2;
     if (log4()) {
         logn4("AnnealingSolver::mutate_based_on_desequilibre END");
     }
