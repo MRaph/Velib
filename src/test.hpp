@@ -5,7 +5,9 @@ void test_initial_load() {
     Circuit circuit = Circuit(inst, rem);
 
     int k = 0;
-    printf("Optimal initial load : %i", k);
+    if (log2()) {
+        logn2("Optimal initial load : " + std::to_string(k));
+    }
 }
 
 void test_circuit_reverse_branch() {

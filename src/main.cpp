@@ -160,8 +160,9 @@ int main(int argc, char *argv[]) {
     time_stop = clock();
     float diff = ((float)time_stop - (float)time_start);
     float seconds = diff/CLOCKS_PER_SEC;
-    printf("Time of execution: %f\n", seconds);
-
+    if (log1()) {
+        logn1("Time of execution: %f" + std::to_string(seconds));
+    }
     delete args;
     return 0;
 }

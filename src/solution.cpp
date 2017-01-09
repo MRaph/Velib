@@ -61,18 +61,13 @@ void Solution::solve_stupid() {
             sid++;
         }
     }
-    printf("hello again\n");
     // les stations restantes sont visitées par la dernière remorque
     Circuit* last_circuit = this->circuits->back();
     while (sid < inst->stations->size()) {
         last_circuit->stations->push_back(inst->stations->at(sid));
         sid++;
     }
-    printf("End solve_stupid\n");
-    printf("circuit\n");
-    printf("alst_circuit\n");
     this->update();
-    printf("delete update\n");
 }
 
 void Solution::copy(const Solution* other) {

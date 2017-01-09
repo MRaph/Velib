@@ -57,9 +57,6 @@ bool AnnealingSolver::solve() {
 
     // We iterate over the temperature, which are updated as 0.99*previous_temperature
     while (temperature_current > criteria_stop) {
-        if (log2()) {
-            printf("%f \t %d \t %d\n", temperature_current, this->cursol->get_cost(), this->bestsol->get_cost());
-        }
         nb_iterations_ameliorations = 0;
         // We apply N random searches at each step of temperature
         while (nb_iterations_ameliorations < nb_iterations_temperature) {

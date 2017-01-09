@@ -139,9 +139,12 @@ bool Steepest2optSolver::solve() {
     Options* args = Options::args;
     int itermax = args->itermax;
     this->bestsol->copy(this->testsol);
+    this->cursol->copy(this->testsol);
 
     for(int i=1; i<itermax; i++){
-        printf("Iteration %i du steepestSolver \n",i);
+        if (log7()) {
+            logn7("Iteration " + std::to_string(i) + " du steepestSolver");
+        }
         this->cursol = new Solution(inst);
         this->cursol = glouton_aleatoire(this->cursol);
         mutate(this->cursol);
@@ -161,7 +164,9 @@ void Steepest2optSolver::mutate(Solution* sol) {
     logn4("Steepest2optSolver::mutate BEGIN");
 
     for(int i=0;i<sol->circuits->size();i++){
-        printf("-- Circuit numéro %i\n", i);
+        if (log8()) {
+            logn8("-- Circuit numéro "+ std::to_string(i));
+        }
         sol->circuits->at(i) = sol->circuits->at(i)->mutate_2opt_steepest(100000);
     }
 
