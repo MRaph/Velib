@@ -11,6 +11,7 @@ Circuit::Circuit(Instance* inst, Remorque* remorque) {
     this->stations = new list<Station*>();
     this->depots = new map<Station*,int>();
     this->charges = new map<Station*,int>();
+
     // this->depots = new vector<int>();
     // this->charges = new vector<int>();
 }

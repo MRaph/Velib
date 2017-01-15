@@ -161,8 +161,8 @@ void DescentSolver::mutate(Solution* sol) {
         }
         // Move station of circuit 2 to 1
         remove_position = rand() % length_circuit_2;
-        station_circuit_2 = circuit_2->erase(remove_position);
-        circuit_1->insert(station_circuit_2, 0);
+        station_circuit_2 = sol->circuits->at(circuit_2_int)->erase(remove_position);
+        sol->circuits->at(circuit_1_int)->insert(station_circuit_2, 0);
         return;
     } else if (!is_circuit_1_empty && is_circuit_2_empty) {
         if (log3()) {
@@ -170,8 +170,8 @@ void DescentSolver::mutate(Solution* sol) {
         }
         // Move station of circuit 1 to 2
         remove_position = rand() % length_circuit_1;
-        station_circuit_1 = circuit_1->erase(remove_position);
-        circuit_2->insert(station_circuit_1, 0);
+        station_circuit_1 = sol->circuits->at(circuit_1_int)->erase(remove_position);
+        sol->circuits->at(circuit_2_int)->insert(station_circuit_1, 0);
         return;
     } else {
         // Both circuits aren't empty
@@ -182,9 +182,9 @@ void DescentSolver::mutate(Solution* sol) {
             }
             // We remove a station from circuit 1 and add it to circuit 2
             remove_position = rand() % length_circuit_1;
-            add_position = rand() % length_circuit_2+1; // +1 to insert at the end
-            station_to_move = circuit_1->erase(remove_position);
-            circuit_2->insert(station_to_move, add_position);
+            add_position = rand() % (length_circuit_2+1); // +1 to insert at the end
+            station_to_move = sol->circuits->at(circuit_1_int)->erase(remove_position);
+            sol->circuits->at(circuit_2_int)->insert(station_to_move, add_position);
             return;
         } else {
             // Same circuit, non-empty
@@ -193,15 +193,19 @@ void DescentSolver::mutate(Solution* sol) {
                     logn3("AnnealingSolver::mutate - Intern mutation accepted.");
                 }
                 // Pick two random positions
-                int k = rand() % (circuit_1->stations->size()-1);
-                int l = rand() % (circuit_1->stations->size()-1);
+                int k = rand() % (circuit_1->stations->size());
+                int l = rand() % (circuit_1->stations->size());
                 if (k != l) {
                     // mutate_2opt implies that first argument is lower than second one.
-                    this->mutate_2opt(circuit_1, min(k,l), max(k,l));
-                } else {
+                    this->mutate_2opt(sol->circuits->at(circuit_1_int), min(k,l), max(k,l));
+                } else  if (k==0) {
                     // if k is the last position, we switch the last two stations.
                     l = k+1;
-                    this->mutate_2opt(circuit_1, k, l);
+                    this->mutate_2opt(sol->circuits->at(circuit_1_int), k, l);
+                } else {
+                    l = k;
+                    k -= 1;
+                    this->mutate_2opt(sol->circuits->at(circuit_1_int), k, l);
                 }
             } else {
                 if (log3()) {

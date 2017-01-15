@@ -61,4 +61,22 @@ void Solver::mutate_2opt_best(Circuit* circuit) {
     delete curr_circuit;
     return;
 }
+/*
+Circuit* Solver::mutate_2opt_steepest(Circuit* circuit, Circuit* current_best, int itermax) {
+    int old_score = circuit->get_cost();
+    mutate_2opt_best(circuit);
+    int new_score = circuit->get_cost();
+    int count = 0;
+
+    while (count < itermax && new_score < old_score) {
+        count += 1;
+        old_score = new_score;
+        mutate_2opt_best(circuit):
+        new_score = circuit->get_cost();
+    }
+
+
+    return current_best;
+}*/
+
 // ./

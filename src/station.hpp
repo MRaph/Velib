@@ -32,5 +32,9 @@ public:
         return this->ideal;
     }
 
+    int get_desequilibre() {
+        return this->nbvp - this->ideal;
+    }
+
 };
 #endif

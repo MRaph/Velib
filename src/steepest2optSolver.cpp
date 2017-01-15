@@ -80,16 +80,18 @@ Solution* Steepest2optSolver::glouton_aleatoire(Solution* sol) {
         logn4("Steepest2optSolver::apply_one_greedy BEGIN");
     }
     sol->clear();
+    Station* station;
+    Circuit* circuit;
 
-    auto stations = new vector<Station*>(*inst->stations);
+    //auto stations = new vector<Station*>(*inst->stations);
     if (Options::args->station_chooser == "RAND") {
         // On m�lange le vector par la lib standard c++
-        random_shuffle(stations->begin(), stations->end());
+        random_shuffle(inst->stations->begin(), inst->stations->end());
     };
 
     int remorque_id = -1; // s�lection des remorques � tour de r�le
-    for (unsigned j = 0; j < stations->size(); j++) {
-        Station* station = stations->at(j);
+    for (unsigned j = 0; j < inst->stations->size(); j++) {
+        station = inst->stations->at(j);
 
         auto rchooser = Options::args->remorque_chooser;
         if (rchooser == "ALT") {
@@ -99,15 +101,12 @@ Solution* Steepest2optSolver::glouton_aleatoire(Solution* sol) {
         } else {
             U::die("remorque_chooser inconnu : " + U::to_s(rchooser));
         }
-        Circuit* circuit = sol->circuits->at(remorque_id);
-
-        // if (circuit->remorque->name == "r2" && station->name == "s8") {
-        //     Log::level += 7;
-        // }
+        circuit = sol->circuits->at(remorque_id);
         circuit->insert_from_option(station);
+
     }
     if (log5()) {
-        logn5("Steepest2optSolver::apply_one_greedy: avant appel � sol->update");
+        logn5("Steepest2optSolver::apply_one_greedy: avant appel à sol->update");
     }
     sol->update();
     if (log4()) {
@@ -145,8 +144,8 @@ bool Steepest2optSolver::solve() {
         if (log7()) {
             logn7("Iteration " + std::to_string(i) + " du steepestSolver");
         }
-        this->cursol = new Solution(inst);
-        this->cursol = glouton_aleatoire(this->cursol);
+        // this->cursol = new Solution(inst);
+        this->cursol->copy(glouton_aleatoire(this->cursol));
         mutate(this->cursol);
 
         if(this->cursol->get_cost() < this->bestsol->get_cost()) {

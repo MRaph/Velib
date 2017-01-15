@@ -27,6 +27,9 @@ void test_action(Options* args) {
 void instance_action(Options* args) {
     logn1("instance_action BEGIN : lecture, affichage d'une instance");
     Instance* inst = new Instance(args->filename, args);
+    if (log2()) {
+        logn2("Borne inf de l'instance : " + std::to_string(inst->get_borne_inf()));
+    }
     inst->print_instance();
     inst->print_instance("mini_rand.dat");
     delete inst;
@@ -36,6 +39,9 @@ void instance_action(Options* args) {
 void stupid_solver_action(Options* args) {
     logn1("stupid_solver_action BEGIN");
     Instance* inst = new Instance(args->filename, args);
+    if (log2()) {
+        logn2("Borne inf de l'instance : " + std::to_string(inst->get_borne_inf()));
+    }
     StupidSolver* solver = new StupidSolver(inst);
     solver->solve();
     if (solver->found) {
@@ -51,6 +57,9 @@ void stupid_solver_action(Options* args) {
 void carlo_solver_action(Options* args) {
     logn1("carlo_solver_action BEGIN");
     Instance* inst = new Instance(args->filename, args);
+    if (log2()) {
+        logn2("Borne inf de l'instance : " + std::to_string(inst->get_borne_inf()));
+    }
     CarloSolver* solver = new CarloSolver(inst);
     solver->solve();
     if (solver->found) {
@@ -81,6 +90,9 @@ void steepest2opt_solver_action(Options* args) {
 void descent_solver_action(Options* args) {
     logn1("descent_solver_action BEGIN");
     Instance* inst = new Instance(args->filename, args);
+    if (log2()) {
+        logn2("Borne inf de l'instance : " + std::to_string(inst->get_borne_inf()));
+    }
     DescentSolver* solver = new DescentSolver(inst);
     solver->solve();
     if (solver->found) {
@@ -96,6 +108,9 @@ void descent_solver_action(Options* args) {
 void annealing_solver_action(Options* args) {
     logn1("annealing_solver_action END");
     Instance* inst = new Instance(args->filename, args);
+    if (log2()) {
+        logn2("Borne inf de l'instance : " + std::to_string(inst->get_borne_inf()));
+    }
     AnnealingSolver* solver = new AnnealingSolver(inst);
     if (solver->found) {
         Solution::save(solver->get_solution(), args);
@@ -110,6 +125,9 @@ void annealing_solver_action(Options* args) {
 void taboo_solver_action(Options* args) {
     logn1("taboo_solver_action BEGIN");
     Instance* inst = new Instance(args->filename, args);
+    if (log2()) {
+        logn2("Borne inf de l'instance : " + std::to_string(inst->get_borne_inf()));
+    }
     TabooSolver* solver = new TabooSolver(inst);
     solver->solve();
     if (solver->found) {

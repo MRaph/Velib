@@ -80,6 +80,7 @@ public:
     inline string get_cost_string() {
         return U::to_s(this->desequilibre) + "-" + U::to_s(this->length);
     }
+
     // Crée un solution initiale stupide mais valide
     void solve_stupid();
 };

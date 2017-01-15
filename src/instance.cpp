@@ -375,6 +375,27 @@ int Instance::get_dist(list<Station*>* stations, Remorque* remorque) {
     return dist;
 }
 
+int Instance::get_borne_inf() {
+    int i=0;
+    int max_capacite_remorques = 0;
+    int max_desequilibre_stations = 0;
+
+    for (i=0; i < this->remorques->size(); i++) {
+        if (this->remorques->at(i)->getCapa() > max_capacite_remorques) {
+            max_capacite_remorques = this->remorques->at(i)->getCapa();
+        }
+    }
+
+    for (i=0; i < this->stations->size(); i++) {
+        if (abs(this->stations->at(i)->get_desequilibre()) > max_desequilibre_stations) {
+            max_desequilibre_stations = abs(this->stations->at(i)->get_desequilibre());
+        }
+    }
+
+    return max(0, abs(max_desequilibre_stations)-max_capacite_remorques);
+
+}
+
 // Affiche l'instance courante dans un format réutilisable en entrée
 //
 void Instance::print_instance(ostream& os) {

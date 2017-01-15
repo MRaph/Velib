@@ -102,6 +102,8 @@ public:
 
     int get_dist(Site* s1, Site* s2);
 
+    int get_borne_inf();
+
     // // construit et retourne un pointeur sur liste d'arcs (voir .cpp)
     // vector<Arc*>* make_arcs(vector<Station*>* stations, Remorque* remorque = NULL);
 

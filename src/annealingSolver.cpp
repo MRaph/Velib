@@ -47,7 +47,7 @@ bool AnnealingSolver::solve() {
     double temperature_update = 0.99;
     int nb_iterations_temperature = args->itermax;
     double temperature_current = temperature_init;
-    double criteria_stop = 1;
+    double criteria_stop = temperature_init/500;
 
     Solution* solution_current = new Solution(this->cursol);
 
